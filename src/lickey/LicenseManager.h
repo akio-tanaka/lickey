@@ -2,7 +2,7 @@
 #include "Salt.h"
 #include "Date.h"
 #include "License.h"
-namespace ETLicense
+namespace lickey
 {
     class HardwareKey;
     class FeatureInfo;

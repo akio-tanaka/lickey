@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Version.h"
-using namespace ETLicense;
+using namespace lickey;
 
 Version::Version()
     : version(1)    // first version

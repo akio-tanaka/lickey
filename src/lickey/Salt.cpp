@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Salt.h"
 #include "CryptoUtility.h"
-using namespace ETLicense;
+using namespace lickey;
 
 Salt::Salt()
 {}

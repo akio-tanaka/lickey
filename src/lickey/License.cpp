@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "License.h"
 #include "Version.h"
-using namespace ETLicense;
+using namespace lickey;
 
 License::License()
     : fileVersion(VERSION())

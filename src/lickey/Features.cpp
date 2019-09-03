@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Features.h"
-using namespace ETLicense;
+using namespace lickey;
 
 
 bool Features::IsValid(const std::string& featureName) const

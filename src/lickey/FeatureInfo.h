@@ -3,7 +3,7 @@
 #include "Date.h"
 #include "Hash.h"
 
-namespace ETLicense
+namespace lickey
 {
     class FeatureInfo
     {

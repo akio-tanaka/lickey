@@ -28,7 +28,7 @@
 #endif
 // warning C4996 ÇÃó}êßÇÕÇ±Ç±Ç‹Ç≈
 
-void ETLicense::InitializeOpenSSL()
+void lickey::InitializeOpenSSL()
 {
     RAND_poll();
     while (RAND_status() == 0)
@@ -39,7 +39,7 @@ void ETLicense::InitializeOpenSSL()
 }
 
 
-bool ETLicense::Encrypt(const char* data, const size_t datalen, const unsigned char* key, const unsigned char* iv, unsigned char* dest, size_t& destlen)
+bool lickey::Encrypt(const char* data, const size_t datalen, const unsigned char* key, const unsigned char* iv, unsigned char* dest, size_t& destlen)
 {
     EVP_CIPHER_CTX en;
     int i = 0;
@@ -60,7 +60,7 @@ bool ETLicense::Encrypt(const char* data, const size_t datalen, const unsigned c
 }
 
 
-bool ETLicense::Decrypt(const unsigned char* data, const size_t datalen, const unsigned char* key, const unsigned char* iv, unsigned char* dest, size_t& destlen)
+bool lickey::Decrypt(const unsigned char* data, const size_t datalen, const unsigned char* key, const unsigned char* iv, unsigned char* dest, size_t& destlen)
 {
     EVP_CIPHER_CTX de;
     int f_len = 0;
@@ -87,7 +87,7 @@ bool ETLicense::Decrypt(const unsigned char* data, const size_t datalen, const u
 }
 
 
-bool ETLicense::MD5(
+bool lickey::MD5(
     const char* data,
     const size_t datalen,
     unsigned char hash[16])
@@ -100,7 +100,7 @@ bool ETLicense::MD5(
 }
 
 
-bool ETLicense::SHA256(
+bool lickey::SHA256(
     const char* data,
     const size_t datalen,
     unsigned char hash[32])
@@ -113,7 +113,7 @@ bool ETLicense::SHA256(
 }
 
 
-void ETLicense::EncodeBase64(
+void lickey::EncodeBase64(
     const unsigned char* data,
     const int datalen,
     std::string& str)
@@ -139,7 +139,7 @@ void ETLicense::EncodeBase64(
 }
 
 
-void ETLicense::EncodeBase64(
+void lickey::EncodeBase64(
     const std::string& data,
     std::string& str)
 {
@@ -164,7 +164,7 @@ void ETLicense::EncodeBase64(
 }
 
 
-void ETLicense::DecodeBase64(
+void lickey::DecodeBase64(
     const std::string& str,
     unsigned char*& data,
     int& datalen)
@@ -190,7 +190,7 @@ void ETLicense::DecodeBase64(
 }
 
 
-bool ETLicense::MakeSalt(Salt& salt)
+bool lickey::MakeSalt(Salt& salt)
 {
     unsigned char tmp[32];
     int result = RAND_bytes(tmp, 32);

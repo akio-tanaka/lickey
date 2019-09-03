@@ -3,7 +3,7 @@
 #include <fstream>
 #include <windows.h>
 
-std::string ETLicense::GetExtension(const std::string& filePath)
+std::string lickey::GetExtension(const std::string& filePath)
 {
     std::string::size_type pos = filePath.find_last_of(".");
     if (std::string::npos == pos)
@@ -14,7 +14,7 @@ std::string ETLicense::GetExtension(const std::string& filePath)
 }
 
 
-std::string ETLicense::GetBaseFilePath(const std::string& filePath)
+std::string lickey::GetBaseFilePath(const std::string& filePath)
 {
     std::string::size_type pos = filePath.find_last_of(".");
     if (std::string::npos == pos)
@@ -25,7 +25,7 @@ std::string ETLicense::GetBaseFilePath(const std::string& filePath)
 }
 
 
-std::string ETLicense::GetFolderPath(const std::string& filePath)
+std::string lickey::GetFolderPath(const std::string& filePath)
 {
     std::string::size_type pos = filePath.find_last_of("\\");
     if (std::string::npos == pos)
@@ -36,7 +36,7 @@ std::string ETLicense::GetFolderPath(const std::string& filePath)
 }
 
 
-std::string ETLicense::GetFilename(const std::string& filePath)
+std::string lickey::GetFilename(const std::string& filePath)
 {
     std::string::size_type pos = filePath.find_last_of("\\");
     if (std::string::npos == pos)
@@ -47,7 +47,7 @@ std::string ETLicense::GetFilename(const std::string& filePath)
 }
 
 
-std::string ETLicense::GetExeFilePath()
+std::string lickey::GetExeFilePath()
 {
     static const int BUF_SIZE = 2048;
     char path[BUF_SIZE];
@@ -57,13 +57,13 @@ std::string ETLicense::GetExeFilePath()
 }
 
 
-std::string ETLicense::GetExeFolderPath()
+std::string lickey::GetExeFolderPath()
 {
     return GetFolderPath(GetExeFilePath());
 }
 
 
-std::string ETLicense::GivePostfix(const std::string& filepath, const std::string& postfix)
+std::string lickey::GivePostfix(const std::string& filepath, const std::string& postfix)
 {
     size_t pos = filepath.find_last_of(".");
     std::string ans = (std::string::npos == pos)
@@ -73,7 +73,7 @@ std::string ETLicense::GivePostfix(const std::string& filepath, const std::strin
 }
 
 
-std::string ETLicense::ChangeExtension(const std::string& filepath, const std::string& newExt)
+std::string lickey::ChangeExtension(const std::string& filepath, const std::string& newExt)
 {
     std::string::size_type pos = filepath.find_last_of(".");
     if (std::string::npos == pos)
@@ -84,7 +84,7 @@ std::string ETLicense::ChangeExtension(const std::string& filepath, const std::s
 }
 
 
-std::string ETLicense::JoinPath(const std::string& folderpath, const std::string& filepath)
+std::string lickey::JoinPath(const std::string& folderpath, const std::string& filepath)
 {
     if (folderpath.empty())
     {
@@ -98,7 +98,7 @@ std::string ETLicense::JoinPath(const std::string& folderpath, const std::string
 }
 
 
-bool ETLicense::ReadLines(const std::string& filepath, std::vector<std::string>& lines)
+bool lickey::ReadLines(const std::string& filepath, std::vector<std::string>& lines)
 {
     std::ifstream in(filepath.c_str());
     if (!in)

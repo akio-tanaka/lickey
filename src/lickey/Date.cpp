@@ -4,7 +4,7 @@
 #include <iomanip>
 #include <boost/lexical_cast.hpp>
 
-bool ETLicense::Load(Date& date, const std::string& str)
+bool lickey::Load(Date& date, const std::string& str)
 {
     try
     {
@@ -19,13 +19,13 @@ bool ETLicense::Load(Date& date, const std::string& str)
 }
 
 
-void ETLicense::SetToday(Date& date)
+void lickey::SetToday(Date& date)
 {
     date = boost::gregorian::day_clock::local_day();
 }
 
 
-std::string ETLicense::ToString(const Date& date)
+std::string lickey::ToString(const Date& date)
 {
     return boost::gregorian::to_iso_string(date);
 }

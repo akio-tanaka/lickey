@@ -14,7 +14,7 @@
 #include <fstream>
 #include <locale>
 // for C4996: http://eng-notebook.com/blog-entry-229/
-using namespace ETLicense;
+using namespace lickey;
 
 namespace
 {
@@ -554,7 +554,7 @@ bool LicenseManager::ConvertFeature(
         LOG(error) << "issue not found in feature line (name = " << featureName << ")\n";
         return false;
     }
-    if (!ETLicense::Load(featureInfo.issueDate, it->second))
+    if (!lickey::Load(featureInfo.issueDate, it->second))
     {
         LOG(error) << "invalid issue date = " << it->second << " (name = " << featureName << ")\n";
         return false;
@@ -566,7 +566,7 @@ bool LicenseManager::ConvertFeature(
         LOG(error) << "expire not found in feature line (name = " << featureName << ")\n";
         return false;
     }
-    if (!ETLicense::Load(featureInfo.expireDate, it->second))
+    if (!lickey::Load(featureInfo.expireDate, it->second))
     {
         LOG(error) << "invalid expire date = " << it->second << " (name = " << featureName << ")\n";
         return false;

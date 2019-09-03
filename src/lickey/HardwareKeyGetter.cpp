@@ -5,7 +5,7 @@
 #include <iphlpapi.h>
 #include <iomanip>
 #pragma comment(lib, "IPHLPAPI.lib")
-using namespace ETLicense;
+using namespace lickey;
 // https://msdn.microsoft.com/en-us/library/windows/desktop/aa365917(v=vs.85).aspx for mac address
 
 HardwareKeyGetter::HardwareKeyGetter()

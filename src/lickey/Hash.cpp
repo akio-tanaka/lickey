@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Hash.h"
-using namespace ETLicense;
+using namespace lickey;
 
 Hash::Hash()
     : hash("")

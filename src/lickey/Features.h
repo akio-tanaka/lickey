@@ -1,7 +1,7 @@
 #pragma once
 #include "FeatureInfo.h"
 
-namespace ETLicense
+namespace lickey
 {
     class Hash;
 

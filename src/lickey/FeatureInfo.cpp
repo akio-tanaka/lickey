@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "FeatureInfo.h"
 #include "Date.h"
-using namespace ETLicense;
+using namespace lickey;
 
 FeatureInfo::FeatureInfo()
 {}

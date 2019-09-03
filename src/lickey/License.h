@@ -3,7 +3,7 @@
 #include "HardwareKey.h"
 #include "Salt.h"
 
-namespace ETLicense
+namespace lickey
 {
     class License
     {

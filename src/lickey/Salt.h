@@ -1,6 +1,6 @@
 #pragma once
 
-namespace ETLicense
+namespace lickey
 {
     class Salt
     {

@@ -7,7 +7,7 @@ BOOST_AUTO_TEST_SUITE(Date)
 
 BOOST_AUTO_TEST_CASE(Constructor01)
 {
-    ETLicense::Date date(2017, 2, 28);
+    lickey::Date date(2017, 2, 28);
 
     BOOST_CHECK_EQUAL(2017, date.year());
     BOOST_CHECK_EQUAL(2, date.month());
@@ -16,16 +16,16 @@ BOOST_AUTO_TEST_CASE(Constructor01)
 
 BOOST_AUTO_TEST_CASE(Constructor02)
 {
-    ETLicense::Date date;
-    ETLicense::Load(date, "20170228");
-    BOOST_CHECK_EQUAL("20170228", ETLicense::ToString(date));
+    lickey::Date date;
+    lickey::Load(date, "20170228");
+    BOOST_CHECK_EQUAL("20170228", lickey::ToString(date));
 }
 
 BOOST_AUTO_TEST_CASE(EQ01)
 {
-    ETLicense::Date date1(2017, 2, 28);
-    ETLicense::Date date2;
-    ETLicense::Load(date2, "20170228");
+    lickey::Date date1(2017, 2, 28);
+    lickey::Date date2;
+    lickey::Load(date2, "20170228");
     BOOST_CHECK_EQUAL(true, date1 == date2);
 }
 

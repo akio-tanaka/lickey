@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "FeatureVersion.h"
-using namespace ETLicense;
+using namespace lickey;
 
 FeatureVersion::FeatureVersion()
 {}

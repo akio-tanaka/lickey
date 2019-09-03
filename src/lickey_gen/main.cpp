@@ -9,7 +9,7 @@
 #include <License.h>
 #include <LicenseManager.h>
 #include <Version.h>
-using namespace ETLicense;
+using namespace lickey;
 
 namespace
 {
