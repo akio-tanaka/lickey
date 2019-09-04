@@ -3,114 +3,118 @@
 #include <fstream>
 #include <windows.h>
 
-std::string lickey::GetExtension(const std::string& filePath)
+
+namespace lickey
 {
-    std::string::size_type pos = filePath.find_last_of(".");
-    if (std::string::npos == pos)
+    std::string GetExtension(const std::string& filePath)
     {
-        return "";
+        std::string::size_type pos = filePath.find_last_of(".");
+        if (std::string::npos == pos)
+        {
+            return "";
+        }
+        return filePath.substr(pos, filePath.size() - pos);
     }
-    return filePath.substr(pos, filePath.size() - pos);
-}
 
 
-std::string lickey::GetBaseFilePath(const std::string& filePath)
-{
-    std::string::size_type pos = filePath.find_last_of(".");
-    if (std::string::npos == pos)
+    std::string GetBaseFilePath(const std::string& filePath)
     {
-        return filePath;
+        std::string::size_type pos = filePath.find_last_of(".");
+        if (std::string::npos == pos)
+        {
+            return filePath;
+        }
+        return filePath.substr(0, pos);
     }
-    return filePath.substr(0, pos);
-}
 
 
-std::string lickey::GetFolderPath(const std::string& filePath)
-{
-    std::string::size_type pos = filePath.find_last_of("\\");
-    if (std::string::npos == pos)
+    std::string GetFolderPath(const std::string& filePath)
     {
-        return "";
+        std::string::size_type pos = filePath.find_last_of("\\");
+        if (std::string::npos == pos)
+        {
+            return "";
+        }
+        return filePath.substr(0, pos);
     }
-    return filePath.substr(0, pos);
-}
 
 
-std::string lickey::GetFilename(const std::string& filePath)
-{
-    std::string::size_type pos = filePath.find_last_of("\\");
-    if (std::string::npos == pos)
+    std::string GetFilename(const std::string& filePath)
     {
-        return filePath;
+        std::string::size_type pos = filePath.find_last_of("\\");
+        if (std::string::npos == pos)
+        {
+            return filePath;
+        }
+        return filePath.substr(pos + 1, filePath.size() - pos - 1);
     }
-    return filePath.substr(pos + 1, filePath.size() - pos - 1);
-}
 
 
-std::string lickey::GetExeFilePath()
-{
-    static const int BUF_SIZE = 2048;
-    char path[BUF_SIZE];
-    DWORD status = GetModuleFileName(NULL, path, BUF_SIZE);
-    assert(0 != status);
-    return path;
-}
-
-
-std::string lickey::GetExeFolderPath()
-{
-    return GetFolderPath(GetExeFilePath());
-}
-
-
-std::string lickey::GivePostfix(const std::string& filepath, const std::string& postfix)
-{
-    size_t pos = filepath.find_last_of(".");
-    std::string ans = (std::string::npos == pos)
-        ? filepath + "_" + postfix
-        : filepath.substr(0, pos) + "_" + postfix + filepath.substr(pos, filepath.size() - pos);
-    return ans;
-}
-
-
-std::string lickey::ChangeExtension(const std::string& filepath, const std::string& newExt)
-{
-    std::string::size_type pos = filepath.find_last_of(".");
-    if (std::string::npos == pos)
+    std::string GetExeFilePath()
     {
-        return filepath + "." + newExt;
+        static const int BUF_SIZE = 2048;
+        char path[BUF_SIZE];
+        DWORD status = GetModuleFileName(NULL, path, BUF_SIZE);
+        assert(0 != status);
+        return path;
     }
-    return filepath.substr(0, pos) + "." + newExt;
-}
 
 
-std::string lickey::JoinPath(const std::string& folderpath, const std::string& filepath)
-{
-    if (folderpath.empty())
+    std::string GetExeFolderPath()
     {
-        return filepath;
+        return GetFolderPath(GetExeFilePath());
     }
-    if ('\\' == folderpath.back())
-    {
-        return folderpath + filepath;
-    }
-    return folderpath + "\\" + filepath;
-}
 
 
-bool lickey::ReadLines(const std::string& filepath, std::vector<std::string>& lines)
-{
-    std::ifstream in(filepath.c_str());
-    if (!in)
+    std::string GivePostfix(const std::string& filepath, const std::string& postfix)
     {
-        return false;
+        size_t pos = filepath.find_last_of(".");
+        std::string ans = (std::string::npos == pos)
+            ? filepath + "_" + postfix
+            : filepath.substr(0, pos) + "_" + postfix + filepath.substr(pos, filepath.size() - pos);
+        return ans;
     }
-    while (!in.eof())
+
+
+    std::string ChangeExtension(const std::string& filepath, const std::string& newExt)
     {
-        std::string line;
-        getline(in, line);
-        lines.push_back(line);
+        std::string::size_type pos = filepath.find_last_of(".");
+        if (std::string::npos == pos)
+        {
+            return filepath + "." + newExt;
+        }
+        return filepath.substr(0, pos) + "." + newExt;
     }
-    in.close();
-    return true;
+
+
+    std::string JoinPath(const std::string& folderpath, const std::string& filepath)
+    {
+        if (folderpath.empty())
+        {
+            return filepath;
+        }
+        if ('\\' == folderpath.back())
+        {
+            return folderpath + filepath;
+        }
+        return folderpath + "\\" + filepath;
+    }
+
+
+    bool ReadLines(const std::string& filepath, std::vector<std::string>& lines)
+    {
+        std::ifstream in(filepath.c_str());
+        if (!in)
+        {
+            return false;
+        }
+        while (!in.eof())
+        {
+            std::string line;
+            getline(in, line);
+            lines.push_back(line);
+        }
+        in.close();
+        return true;
+    }
 }

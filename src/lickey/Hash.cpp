@@ -1,42 +1,45 @@
 #include "stdafx.h"
 #include "Hash.h"
-using namespace lickey;
-
-Hash::Hash()
-    : hash("")
-{}
 
 
-Hash::Hash(const Hash& obj)
-    : hash(obj.hash)
-{}
-
-
-Hash::~Hash()
-{}
-
-
-Hash& Hash::operator=(const Hash& obj)
+namespace lickey
 {
-    hash = obj.hash;
-    return *this;
-}
+    Hash::Hash()
+        : hash("")
+    {}
 
 
-Hash& Hash::operator=(const std::string& other)
-{
-    hash = other;
-    return *this;
-}
+    Hash::Hash(const Hash& obj)
+        : hash(obj.hash)
+    {}
 
 
-bool Hash::operator==(const Hash& other) const
-{
-    return (0 == hash.compare(other.hash));
-}
+    Hash::~Hash()
+    {}
 
 
-bool Hash::operator!=(const Hash& other) const
-{
-    return !((*this) == other);
+    Hash& Hash::operator=(const Hash& obj)
+    {
+        hash = obj.hash;
+        return *this;
+    }
+
+
+    Hash& Hash::operator=(const std::string& other)
+    {
+        hash = other;
+        return *this;
+    }
+
+
+    bool Hash::operator==(const Hash& other) const
+    {
+        return (0 == hash.compare(other.hash));
+    }
+
+
+    bool Hash::operator!=(const Hash& other) const
+    {
+        return !((*this) == other);
+    }
 }

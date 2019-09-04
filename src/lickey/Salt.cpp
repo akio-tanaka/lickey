@@ -1,29 +1,32 @@
 #include "stdafx.h"
 #include "Salt.h"
 #include "CryptoUtility.h"
-using namespace lickey;
-
-Salt::Salt()
-{}
 
 
-Salt::Salt(const Salt& obj)
-    : salt(obj.salt)
-{}
-
-
-Salt::~Salt()
-{}
-
-Salt& Salt::operator=(const Salt& obj)
+namespace lickey
 {
-    salt = obj.salt;
-    return *this;
-}
+    Salt::Salt()
+    {}
 
 
-Salt& Salt::operator=(const std::string& obj)
-{
-    salt = obj;
-    return *this;
+    Salt::Salt(const Salt& obj)
+        : salt(obj.salt)
+    {}
+
+
+    Salt::~Salt()
+    {}
+
+    Salt& Salt::operator=(const Salt& obj)
+    {
+        salt = obj.salt;
+        return *this;
+    }
+
+
+    Salt& Salt::operator=(const std::string& obj)
+    {
+        salt = obj;
+        return *this;
+    }
 }
