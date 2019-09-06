@@ -2,7 +2,7 @@
 
 namespace lickey
 {
-	class HardwareKey
+	class HardwareKey final
 	{
 		friend class HardwareKeyGetter;
 
@@ -10,7 +10,7 @@ namespace lickey
 		HardwareKey();
 		HardwareKey(const HardwareKey& obj);
 		explicit HardwareKey(const std::string& obj);
-		virtual ~HardwareKey();
+		~HardwareKey();
 		HardwareKey& operator=(const HardwareKey& obj);
 		HardwareKey& operator=(const std::string& obj);
 
@@ -19,7 +19,6 @@ namespace lickey
 	private:
 		std::string key;
 	};
-
 
 	typedef std::vector<HardwareKey> HardwareKeys;
 }
