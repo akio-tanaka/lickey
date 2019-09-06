@@ -23,7 +23,6 @@ namespace lickey
 
         License& operator=(const License& obj);
 
-    public:
         Features& FeatureMap() { return features; };
     };
 

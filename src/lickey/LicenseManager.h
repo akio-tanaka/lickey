@@ -8,7 +8,6 @@ namespace lickey
     class FeatureInfo;
     class FeatureVersion;
 
-
     class LicenseManager
     {
         std::string vendorName;
@@ -33,7 +32,6 @@ namespace lickey
             unsigned int numLics,
             License& license);
 
-    public:
         const std::string& VenderName() const { return vendorName; };
         const std::string& AppName() const { return appName; };
         const std::string& LicenseFilepath() const { return licenseFilepath; };

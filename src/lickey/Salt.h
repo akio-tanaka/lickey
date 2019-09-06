@@ -13,7 +13,6 @@ namespace lickey
         Salt& operator=(const Salt& obj);
         Salt& operator=(const std::string& obj);
 
-    public:
         std::string Value() const { return salt; };
     };
 }
