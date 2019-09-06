@@ -44,20 +44,19 @@ namespace lickey
     bool Encrypt(const char* data, const size_t datalen, const unsigned char* key, const unsigned char* iv, unsigned char* dest, size_t& destlen)
     {
         EVP_CIPHER_CTX en;
-        int i = 0;
         int f_len = 0;
         int c_len = static_cast<int>(destlen);
 
         memset(dest, 0x00, destlen);
 
         EVP_CIPHER_CTX_init(&en);
-        EVP_EncryptInit_ex(&en, EVP_aes_256_cbc(), NULL, key, iv);
+        EVP_EncryptInit_ex(&en, EVP_aes_256_cbc(), nullptr, key, iv);
 
         EVP_EncryptUpdate(&en, dest, &c_len, (unsigned char*)data, static_cast<int>(datalen));
-        EVP_EncryptFinal_ex(&en, (unsigned char *)(dest + c_len), &f_len);
+        EVP_EncryptFinal_ex(&en, static_cast<unsigned char *>(dest + c_len), &f_len);
         EVP_CIPHER_CTX_cleanup(&en);
 
-        destlen = c_len + f_len;
+        destlen = (size_t)c_len + (size_t)f_len;
         return true;
     }
 
@@ -71,10 +70,10 @@ namespace lickey
         memset(dest, 0x00, destlen);
 
         EVP_CIPHER_CTX_init(&de);
-        EVP_DecryptInit_ex(&de, EVP_aes_256_cbc(), NULL, key, iv);
+        EVP_DecryptInit_ex(&de, EVP_aes_256_cbc(), nullptr, key, iv);
 
-        EVP_DecryptUpdate(&de, (unsigned char *)dest, &p_len, data, static_cast<int>(datalen));
-        EVP_DecryptFinal_ex(&de, (unsigned char *)(dest + p_len), &f_len);
+        EVP_DecryptUpdate(&de, static_cast<unsigned char *>(dest), &p_len, data, static_cast<int>(datalen));
+        EVP_DecryptFinal_ex(&de, static_cast<unsigned char *>(dest + p_len), &f_len);
 
         EVP_CIPHER_CTX_cleanup(&de);
 
@@ -83,7 +82,7 @@ namespace lickey
         //printf("%s\n", dest);
         //PrintBytes(dest, destlen);
 
-        destlen = p_len + f_len;
+        destlen = (size_t)p_len + (size_t)f_len;
 
         return true;
     }
@@ -111,7 +110,7 @@ namespace lickey
         SHA256_Init(&c);
         SHA256_Update(&c, data, datalen);
         SHA256_Final(hash, &c);
-        return 0;
+        return false;
     }
 
 
@@ -171,14 +170,14 @@ namespace lickey
         unsigned char*& data,
         int& datalen)
     {
-        data = (unsigned char*)malloc(str.size());
+        data = static_cast<unsigned char*>(malloc(str.size()));
         datalen = static_cast<int>(str.size());
         BIO *bmem = BIO_new_mem_buf(str.c_str(), static_cast<int>(str.size()));
         BIO *b64 = BIO_new(BIO_f_base64());
         BIO_set_flags(b64, BIO_FLAGS_BASE64_NO_NL);
         bmem = BIO_push(b64, bmem);
 
-        long n = BIO_read(bmem, data, datalen);
+        const long n = BIO_read(bmem, data, datalen);
         if (n > 0)
         {
             data[n] = 0;
@@ -195,7 +194,8 @@ namespace lickey
     bool MakeSalt(Salt& salt)
     {
         unsigned char tmp[32];
-        int result = RAND_bytes(tmp, 32);
+		// REMARK: never used
+        //int result = RAND_bytes(tmp, 32);
 
         std::string encoded;
         EncodeBase64(tmp, 32, encoded);
