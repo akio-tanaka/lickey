@@ -9,7 +9,7 @@ namespace lickey
 	public:
 		HardwareKey();
 		HardwareKey(const HardwareKey& obj);
-		HardwareKey(const std::string& obj);
+		explicit HardwareKey(const std::string& obj);
 		virtual ~HardwareKey();
 		HardwareKey& operator=(const HardwareKey& obj);
 		HardwareKey& operator=(const std::string& obj);
