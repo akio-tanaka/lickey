@@ -61,7 +61,9 @@ namespace
 {
     typedef std::map<std::string, std::string> FeatureTree;
     typedef FeatureTree::iterator FTItr;
-    typedef FeatureTree::const_iterator CFTItr;
+
+	//REMARK: unused variable
+    //typedef FeatureTree::const_iterator CFTItr;
 
 
     void Split(const std::string& line, std::vector<std::string>& tokens, const std::string delim = " ")
@@ -85,7 +87,6 @@ namespace
                 if (0 == subTokens.front().compare("feature"))
                 {
                     tree["feature"] = "feature";
-                    continue;
                 }
                 continue;
             }
@@ -207,7 +208,7 @@ namespace
             return false;
         }
 
-        unsigned char encryptionIv[16];;
+        unsigned char encryptionIv[16];
         if (!MakeEncryptionIv(key, explicitSalt, encryptionKey, encryptionIv))
         {
             LOG(error) << "fail to get iv";
@@ -224,7 +225,7 @@ namespace
         std::istringstream src(decryptedImplChar, std::ios::binary);
 
         const int validLen = CalcBase64EncodedSize(32) + 8;
-        if (validLen > decryptedImplSize)
+        if (static_cast<size_t>(validLen) > decryptedImplSize)
         {
             LOG(error) << "invalid data section";
             return false;
@@ -240,7 +241,7 @@ namespace
         boost::scoped_array<char> scopedDateImpl(dateImpl);
         src.read(dateImpl, sizeof(char) * 8);
         dateImpl[8] = '\0';
-        if (!::Load(lastUsedDate, dateImpl))
+        if (!Load(lastUsedDate, dateImpl))
         {
             LOG(error) << "fail to decrypt date because of invalid date";
             return false;
