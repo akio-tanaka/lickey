@@ -1,5 +1,4 @@
 #pragma once
-#include "Salt.h"
 #include "Date.h"
 #include "License.h"
 namespace lickey

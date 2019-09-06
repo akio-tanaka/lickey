@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "CryptoUtility.h"
 #include <openssl/evp.h>
-#include <openssl/aes.h>
 #include <openssl/md5.h>
 #include <openssl/sha.h>
 #include <openssl/rand.h>

@@ -1,8 +1,5 @@
 #include "stdafx.h"
 #include "Date.h"
-#include <ctime>
-#include <iomanip>
-#include <boost/lexical_cast.hpp>
 
 
 namespace lickey

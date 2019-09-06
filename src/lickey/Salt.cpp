@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Salt.h"
-#include "CryptoUtility.h"
 
 
 namespace lickey
