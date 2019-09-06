@@ -35,7 +35,7 @@ namespace lickey
         while (RAND_status() == 0)
         {
             unsigned short rand_ret = rand() % 65536;
-            RAND_seed(&rand_ret, sizeof(rand_ret));
+            RAND_seed(&rand_ret, sizeof rand_ret);
         }
     }
 

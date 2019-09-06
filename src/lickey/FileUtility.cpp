@@ -69,7 +69,7 @@ namespace lickey
     std::string GivePostfix(const std::string& filepath, const std::string& postfix)
     {
         size_t pos = filepath.find_last_of(".");
-        std::string ans = (std::string::npos == pos)
+        std::string ans = std::string::npos == pos
             ? filepath + "_" + postfix
             : filepath.substr(0, pos) + "_" + postfix + filepath.substr(pos, filepath.size() - pos);
         return ans;
