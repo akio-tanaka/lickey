@@ -35,11 +35,10 @@ namespace
 
     int CalcBase64EncodedSize(int origDataSize)
     {
-    	// TODO: maybe translate comment to english?
-        const int numBlocks6 = (origDataSize * 8 + 5) / 6;
-        const int numBlocks4 = (numBlocks6 + 3) / 4;
-        const int numNetChars = numBlocks4 * 4;
-        return numNetChars + ((numNetChars / 76) * 2);
+        const int numBlocks6 = (origDataSize * 8 + 5) / 6;  // the number of blocks (6 bits per a block, rounding up)
+        const int numBlocks4 = (numBlocks6 + 3) / 4;    // the number of blocks (4 characters per a block, rounding up)
+        const int numNetChars = numBlocks4 * 4; // the number of characters without carriage return
+        return numNetChars + ((numNetChars / 76) * 2);  // the number of encoded characters (76 characters per line, curretly only for carriage return)
     }
 
 
@@ -62,13 +61,10 @@ namespace
     typedef std::map<std::string, std::string> FeatureTree;
     typedef FeatureTree::iterator FTItr;
 
-	//REMARK: unused variable
-    //typedef FeatureTree::const_iterator CFTItr;
-
 
     void Split(const std::string& line, std::vector<std::string>& tokens, const std::string delim = " ")
     {
-	    const auto trim = [](std::string& str) { boost::trim(str); };
+        const auto trim = [](std::string& str) { boost::trim(str); };
         boost::algorithm::split(tokens, line, boost::is_any_of(delim));
         boost::for_each(tokens, trim);
     }
@@ -108,8 +104,8 @@ namespace
         const std::vector<std::string>& lines,
         std::string& data)
     {
-	    const auto isDataDelmiter = [](const std::string& line) {
-	        const std::string::size_type pos = line.find_first_of(DATA_SECTION_DELIMITER);
+        const auto isDataDelmiter = [](const std::string& line) {
+            const std::string::size_type pos = line.find_first_of(DATA_SECTION_DELIMITER);
             if (std::string::npos == pos)    return false;
             if (0 != pos)    return false;
             return true;

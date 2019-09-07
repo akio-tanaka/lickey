@@ -193,8 +193,6 @@ namespace lickey
     bool MakeSalt(Salt& salt)
     {
         unsigned char tmp[32];
-		// REMARK: never used
-        //int result = RAND_bytes(tmp, 32);
 
         std::string encoded;
         EncodeBase64(tmp, 32, encoded);
