@@ -1,7 +1,7 @@
 #pragma once
 #include <boost/date_time/gregorian/gregorian.hpp>
 
-namespace ETLicense
+namespace lickey
 {
     typedef boost::gregorian::date Date;
 

@@ -1,10 +1,9 @@
 #pragma once
 #include "Salt.h"
 
-namespace ETLicense
+namespace lickey
 {
     void InitializeOpenSSL();
-
 
     bool Encrypt(
         const char* data,

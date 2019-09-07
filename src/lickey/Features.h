@@ -1,10 +1,9 @@
 #pragma once
 #include "FeatureInfo.h"
 
-namespace ETLicense
+namespace lickey
 {
     class Hash;
-
 
     class Features : public std::map<std::string, FeatureInfo>
     {

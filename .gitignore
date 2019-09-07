@@ -42,3 +42,4 @@
 *.tlog
 *.opendb
 src/*/x64/*/*.*
+src/.vs

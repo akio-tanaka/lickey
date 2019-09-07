@@ -1,21 +1,18 @@
 #pragma once
 
-namespace ETLicense
+namespace lickey
 {
-    class Version
-    {
-        unsigned int version;
+	class Version
+	{
+		unsigned int version;
+	public:
+		static Version& GetInstance();
+		virtual ~Version();
+		unsigned int Value() const { return version; };
 
-    private:
-        Version();
-
-    public:
-        static Version& GetInstance();
-        virtual ~Version();
-
-    public:
-        unsigned int Value() const { return version; };
-    };
+	private:
+		Version();
+	};
 
 
 #define VERSION() Version::GetInstance().Value()

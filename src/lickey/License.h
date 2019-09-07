@@ -3,7 +3,7 @@
 #include "HardwareKey.h"
 #include "Salt.h"
 
-namespace ETLicense
+namespace lickey
 {
     class License
     {
@@ -23,7 +23,6 @@ namespace ETLicense
 
         License& operator=(const License& obj);
 
-    public:
         Features& FeatureMap() { return features; };
     };
 

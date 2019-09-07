@@ -1,7 +1,7 @@
 #pragma once
 #include "HardwareKey.h"
 
-namespace ETLicense
+namespace lickey
 {
     class HardwareKeyGetter
     {

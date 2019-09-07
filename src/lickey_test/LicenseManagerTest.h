@@ -11,15 +11,15 @@ BOOST_AUTO_TEST_SUITE(LicenseManagerTest)
 
 BOOST_AUTO_TEST_CASE(Constructor01)
 {
-    ETLicense::HardwareKeyGetter keyGetter;
-    ETLicense::HardwareKeys keys = keyGetter();
+    lickey::HardwareKeyGetter keyGetter;
+    lickey::HardwareKeys keys = keyGetter();
     if (keys.empty())
     {
         return;
     }
     {
-        ETLicense::LicenseManager licMgr("eandt", "mujo-cadread");
-        ETLicense::License lic;
+        lickey::LicenseManager licMgr("eandt", "mujo-cadread");
+        lickey::License lic;
         licMgr.Load("test(CC-E1-D5-41-21-D6).txt", keys.front(), lic);
 
         BOOST_CHECK_EQUAL(false, lic.FeatureMap().IsExpired("base"));

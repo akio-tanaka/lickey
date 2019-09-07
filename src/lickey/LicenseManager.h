@@ -1,13 +1,11 @@
 #pragma once
-#include "Salt.h"
 #include "Date.h"
 #include "License.h"
-namespace ETLicense
+namespace lickey
 {
     class HardwareKey;
     class FeatureInfo;
     class FeatureVersion;
-
 
     class LicenseManager
     {
@@ -33,7 +31,6 @@ namespace ETLicense
             unsigned int numLics,
             License& license);
 
-    public:
         const std::string& VenderName() const { return vendorName; };
         const std::string& AppName() const { return appName; };
         const std::string& LicenseFilepath() const { return licenseFilepath; };

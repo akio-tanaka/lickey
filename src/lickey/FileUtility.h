@@ -1,6 +1,6 @@
 #pragma once
 
-namespace ETLicense
+namespace lickey
 {
     /**
     * return base file path that does not include extension ("." is not included also).

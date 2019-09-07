@@ -8,8 +8,8 @@ BOOST_AUTO_TEST_SUITE(HardwareKey)
 
 BOOST_AUTO_TEST_CASE(Constructor01)
 {
-    ETLicense::HardwareKeyGetter keyGetter;
-    ETLicense::HardwareKeys keys = keyGetter();
+    lickey::HardwareKeyGetter keyGetter;
+    lickey::HardwareKeys keys = keyGetter();
 
     for (size_t i = 0; i < keys.size(); ++i)
     {

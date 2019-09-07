@@ -1,31 +1,32 @@
 #include "stdafx.h"
 #include "Date.h"
-#include <ctime>
-#include <iomanip>
-#include <boost/lexical_cast.hpp>
 
-bool ETLicense::Load(Date& date, const std::string& str)
+
+namespace lickey
 {
-    try
+    bool Load(Date& date, const std::string& str)
     {
-        date = boost::gregorian::from_undelimited_string(str);
-        return true;
+        try
+        {
+            date = boost::gregorian::from_undelimited_string(str);
+            return true;
+        }
+        catch (...)
+        {
+            LOG(error) << "invalid date = " << str;
+            return false;
+        }
     }
-    catch (...)
+
+
+    void SetToday(Date& date)
     {
-        LOG(error) << "invalid date = " << str;
-        return false;
+        date = boost::gregorian::day_clock::local_day();
     }
-}
 
 
-void ETLicense::SetToday(Date& date)
-{
-    date = boost::gregorian::day_clock::local_day();
-}
-
-
-std::string ETLicense::ToString(const Date& date)
-{
-    return boost::gregorian::to_iso_string(date);
+    std::string ToString(const Date& date)
+    {
+        return boost::gregorian::to_iso_string(date);
+    }
 }

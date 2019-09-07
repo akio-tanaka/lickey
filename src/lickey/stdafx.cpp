@@ -1,4 +1,4 @@
-// stdafx.cpp : 標準インクルード ETLicense.pch のみを
+// stdafx.cpp : 標準インクルード lickey.pch のみを
 // 含むソース ファイルは、プリコンパイル済みヘッダーになります。
 // stdafx.obj にはプリコンパイル済み型情報が含まれます。
 
