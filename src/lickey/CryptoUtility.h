@@ -5,7 +5,6 @@ namespace lickey
 {
     void InitializeOpenSSL();
 
-
     bool Encrypt(
         const char* data,
         const size_t datalen,

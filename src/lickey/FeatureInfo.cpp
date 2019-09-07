@@ -5,8 +5,9 @@
 
 namespace lickey
 {
-    FeatureInfo::FeatureInfo()
-    {}
+    FeatureInfo::FeatureInfo(): numLics(0)
+    {
+    }
 
 
     FeatureInfo::~FeatureInfo()

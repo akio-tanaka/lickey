@@ -34,12 +34,12 @@ namespace lickey
 
     bool Hash::operator==(const Hash& other) const
     {
-        return (0 == hash.compare(other.hash));
+        return 0 == hash.compare(other.hash);
     }
 
 
     bool Hash::operator!=(const Hash& other) const
     {
-        return !((*this) == other);
+        return !(*this == other);
     }
 }

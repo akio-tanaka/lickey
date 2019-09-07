@@ -20,8 +20,8 @@ namespace
 {
     using namespace lickey;
 
-    const static unsigned int BUF_SIZE = 65536;
-    const static std::string DATA_SECTION_DELIMITER = "***";
+    const unsigned int BUF_SIZE = 65536;
+    const std::string DATA_SECTION_DELIMITER = "***";
 
 
     struct UnsignedChar2Char
@@ -35,13 +35,10 @@ namespace
 
     int CalcBase64EncodedSize(int origDataSize)
     {
-        // 6bit単位のブロック数（6bit単位で切り上げ）
-        int numBlocks6 = ((origDataSize * 8) + 5) / 6;
-        // 4文字単位のブロック数（4文字単位で切り上げ）
-        int numBlocks4 = (numBlocks6 + 3) / 4;
-        // 改行を含まない文字数
-        int numNetChars = numBlocks4 * 4;
-        // 76文字ごとの改行（改行は "\r\n" とする）を考慮したサイズ
+    	// TODO: maybe translate comment to english?
+        const int numBlocks6 = (origDataSize * 8 + 5) / 6;
+        const int numBlocks4 = (numBlocks6 + 3) / 4;
+        const int numNetChars = numBlocks4 * 4;
         return numNetChars + ((numNetChars / 76) * 2);
     }
 
@@ -64,12 +61,14 @@ namespace
 {
     typedef std::map<std::string, std::string> FeatureTree;
     typedef FeatureTree::iterator FTItr;
-    typedef FeatureTree::const_iterator CFTItr;
+
+	//REMARK: unused variable
+    //typedef FeatureTree::const_iterator CFTItr;
 
 
     void Split(const std::string& line, std::vector<std::string>& tokens, const std::string delim = " ")
     {
-        auto trim = [](std::string& str) { boost::trim(str); };
+	    const auto trim = [](std::string& str) { boost::trim(str); };
         boost::algorithm::split(tokens, line, boost::is_any_of(delim));
         boost::for_each(tokens, trim);
     }
@@ -88,7 +87,6 @@ namespace
                 if (0 == subTokens.front().compare("feature"))
                 {
                     tree["feature"] = "feature";
-                    continue;
                 }
                 continue;
             }
@@ -110,8 +108,8 @@ namespace
         const std::vector<std::string>& lines,
         std::string& data)
     {
-        auto isDataDelmiter = [](const std::string& line) {
-            std::string::size_type pos = line.find_first_of(DATA_SECTION_DELIMITER);
+	    const auto isDataDelmiter = [](const std::string& line) {
+	        const std::string::size_type pos = line.find_first_of(DATA_SECTION_DELIMITER);
             if (std::string::npos == pos)    return false;
             if (0 != pos)    return false;
             return true;
@@ -210,7 +208,7 @@ namespace
             return false;
         }
 
-        unsigned char encryptionIv[16];;
+        unsigned char encryptionIv[16];
         if (!MakeEncryptionIv(key, explicitSalt, encryptionKey, encryptionIv))
         {
             LOG(error) << "fail to get iv";
@@ -226,8 +224,8 @@ namespace
         std::transform(decryptedImpl, decryptedImpl + decryptedImplSize, decryptedImplChar, UnsignedChar2Char());
         std::istringstream src(decryptedImplChar, std::ios::binary);
 
-        int validLen = CalcBase64EncodedSize(32) + 8;
-        if (validLen > decryptedImplSize)
+        const int validLen = CalcBase64EncodedSize(32) + 8;
+        if (static_cast<size_t>(validLen) > decryptedImplSize)
         {
             LOG(error) << "invalid data section";
             return false;
@@ -243,7 +241,7 @@ namespace
         boost::scoped_array<char> scopedDateImpl(dateImpl);
         src.read(dateImpl, sizeof(char) * 8);
         dateImpl[8] = '\0';
-        if (!::Load(lastUsedDate, dateImpl))
+        if (!Load(lastUsedDate, dateImpl))
         {
             LOG(error) << "fail to decrypt date because of invalid date";
             return false;
@@ -276,7 +274,7 @@ namespace
             return false;
         }
 
-        std::string strDate = ToString(lastUsedDate);
+        const std::string strDate = ToString(lastUsedDate);
         assert(8 == strDate.size());
 
         std::ostringstream dst(std::ios::binary);

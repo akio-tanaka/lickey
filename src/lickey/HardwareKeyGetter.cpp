@@ -50,7 +50,7 @@ namespace lickey
             for (UINT i = 0; i < pAdapter->AddressLength; i++)
             {
                 physicalAddress << std::setw(2) << std::setfill('0');   // every loop needs this statement for all tokens
-                if (i == (pAdapter->AddressLength - 1))
+                if (i == pAdapter->AddressLength - 1)
                 {
                     physicalAddress << (int)pAdapter->Address[i];
                 }

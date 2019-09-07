@@ -5,7 +5,6 @@ namespace lickey
 {
     class Hash;
 
-
     class Features : public std::map<std::string, FeatureInfo>
     {
     public:
