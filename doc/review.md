@@ -4,29 +4,27 @@
 
 ## format
 
-```
 feature name=NNN version=VVV issue=YYYYMMDD expire=YYYYMMDD num=N sign=SSSSSSSSSS
 ...(multiple features, 1 feature / line)
 
 data=XXXX
-```
 
 ## feature
 
-- "name is option name of application (string without space)
-- "version is option version of application (integer)
-- "issue is date when this license file is isseud (8 digit integer)
-- "expire" is date when this license is expired(8 digit integer)
-- "num" is how many application can be launched (reserved for floating / does not work for nodelock)
-- "sign" is check sum whehther this feature is valid or not
-  - this sign is hash generated with this line (without "feature" and sign) and implicit salt by SHA - 256 as base64
+- **name** is option name of application (string without space)
+- **version** is option version of application (integer)
+- **issue** is date when this license file is issued (8 digit integer)
+- **expire** is date when this license is expired(8 digit integer)
+- **num** is how many application can be launched (reserved for floating / does not work for nodelock)
+- **sign** is check sum whether this feature is valid or not
+\-- this sign is hash generated with this line (without "feature" and sign) and implicit salt by SHA - 256 as base64
 
-- "data" section stores as base64
-  - the first 4 byte version of license file format
-  - 32 byte before decrypt of data is explicit salt as base64
-  - the other data is encrypted data
-- encryption key = hardware key, explicit salt, vendorName, appName and sign at the first feature digested MD5
-- encryption iv = encryption key, hardware key and explicit salt digested MD5
+- **data** section stores as base64
+- the first 4 byte version of license file format
+- 32 byte before decrypt of data is explicit salt as base64
+- the other data is encrypted data
+- **encryption key** = hardware key, explicit salt, vendorName, appName and sign at the first feature digested MD5
+- **encryption iv** = encryption key, hardware key and explicit salt digested MD5
 
 ## decrypted "data" section
 
