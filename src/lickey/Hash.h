@@ -16,6 +16,9 @@ namespace lickey
         bool operator==(const Hash& other) const;
         bool operator!=(const Hash& other) const;
 
-        std::string Value() const { return hash; };
+        std::string Value() const
+        {
+            return hash;
+        };
     };
 }

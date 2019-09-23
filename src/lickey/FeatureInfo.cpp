@@ -16,12 +16,12 @@ namespace lickey
 
     bool FeatureInfo::IsValid() const
     {
-        if (1 > numLics)
+        if(1 > numLics)
         {
             LOG(error) << "the number of license is zero";
             return false;
         }
-        if (checkSum != sign)
+        if(checkSum != sign)
         {
             LOG(error) << "invalid sign";
             return false;

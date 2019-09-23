@@ -9,7 +9,7 @@ namespace lickey
     std::string GetExtension(const std::string& filePath)
     {
         std::string::size_type pos = filePath.find_last_of(".");
-        if (std::string::npos == pos)
+        if(std::string::npos == pos)
         {
             return "";
         }
@@ -20,7 +20,7 @@ namespace lickey
     std::string GetBaseFilePath(const std::string& filePath)
     {
         std::string::size_type pos = filePath.find_last_of(".");
-        if (std::string::npos == pos)
+        if(std::string::npos == pos)
         {
             return filePath;
         }
@@ -31,7 +31,7 @@ namespace lickey
     std::string GetFolderPath(const std::string& filePath)
     {
         std::string::size_type pos = filePath.find_last_of("\\");
-        if (std::string::npos == pos)
+        if(std::string::npos == pos)
         {
             return "";
         }
@@ -42,7 +42,7 @@ namespace lickey
     std::string GetFilename(const std::string& filePath)
     {
         std::string::size_type pos = filePath.find_last_of("\\");
-        if (std::string::npos == pos)
+        if(std::string::npos == pos)
         {
             return filePath;
         }
@@ -70,8 +70,8 @@ namespace lickey
     {
         size_t pos = filepath.find_last_of(".");
         std::string ans = std::string::npos == pos
-            ? filepath + "_" + postfix
-            : filepath.substr(0, pos) + "_" + postfix + filepath.substr(pos, filepath.size() - pos);
+                          ? filepath + "_" + postfix
+                          : filepath.substr(0, pos) + "_" + postfix + filepath.substr(pos, filepath.size() - pos);
         return ans;
     }
 
@@ -79,7 +79,7 @@ namespace lickey
     std::string ChangeExtension(const std::string& filepath, const std::string& newExt)
     {
         std::string::size_type pos = filepath.find_last_of(".");
-        if (std::string::npos == pos)
+        if(std::string::npos == pos)
         {
             return filepath + "." + newExt;
         }
@@ -89,11 +89,11 @@ namespace lickey
 
     std::string JoinPath(const std::string& folderpath, const std::string& filepath)
     {
-        if (folderpath.empty())
+        if(folderpath.empty())
         {
             return filepath;
         }
-        if ('\\' == folderpath.back())
+        if('\\' == folderpath.back())
         {
             return folderpath + filepath;
         }
@@ -104,11 +104,11 @@ namespace lickey
     bool ReadLines(const std::string& filepath, std::vector<std::string>& lines)
     {
         std::ifstream in(filepath.c_str());
-        if (!in)
+        if(!in)
         {
             return false;
         }
-        while (!in.eof())
+        while(!in.eof())
         {
             std::string line;
             getline(in, line);

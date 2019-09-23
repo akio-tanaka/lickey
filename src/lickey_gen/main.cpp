@@ -36,7 +36,7 @@ namespace
         LicenseManager& licMgr)
     {
         Date expire;
-        if (!::Load(expire, expireDate))
+        if(!::Load(expire, expireDate))
         {
             std::cout << "invalid expire date = " << expireDate << "\n";
             return false;
@@ -85,7 +85,7 @@ int main(int argc, char* argv[])
         std::string feature;
         std::cin >> feature;
         ToLowerAndTrim(feature);
-        if (0 == feature.compare("quit"))
+        if(0 == feature.compare("quit"))
         {
             break;
         }
@@ -103,53 +103,53 @@ int main(int argc, char* argv[])
             std::cout << "expire date(YYYYMMDD format):";
             std::cin >> expireDate;
             ToLowerAndTrim(expireDate);
-            if (0 == expireDate.compare("quit"))
+            if(0 == expireDate.compare("quit"))
             {
                 break;
             }
             Date tmp;
-            if (!Load(tmp, expireDate))
+            if(!Load(tmp, expireDate))
             {
                 std::cout << "invalid date format\n";
                 continue;
             }
             break;
-        } while (true);
+        } while(true);
 
         unsigned int numLics = 0;
         do
         {
             std::cout << "num licenses(position integer):";
             std::cin >> numLics;
-            if (0 == numLics)
+            if(0 == numLics)
             {
                 std::cout << "num licenses must be more than 0\n";
                 continue;
             }
             break;
-        } while (true);
+        } while(true);
 
-        if (!AddFeature(feature, featureVersion, issue, expireDate, numLics, lic, licMgr))
+        if(!AddFeature(feature, featureVersion, issue, expireDate, numLics, lic, licMgr))
         {
             std::cout << "fail to add new feature\n";
         }
-    } while (true);
+    } while(true);
 
-    if (lic.FeatureMap().empty())
+    if(lic.FeatureMap().empty())
     {
         std::cout << "no feature defined\n";
         std::string buf;
         std::cin >> buf;
         return 0;
     }
-    
+
     do
     {
         std::string filepath;
         std::cout << "license file name:";
         std::cin >> filepath;
         ToLowerAndTrim(filepath);
-        if (0 == filepath.compare("quit"))
+        if(0 == filepath.compare("quit"))
         {
             std::cout << "done without saving license file\n";
             break;
@@ -160,7 +160,7 @@ int main(int argc, char* argv[])
         std::stringstream filepathImpl;
         filepathImpl << baseFilepath << "(" << hardwareKey << ")" << extension;
 
-        if (!licMgr.Save(filepathImpl.str(), HardwareKey(hardwareKey), lic))
+        if(!licMgr.Save(filepathImpl.str(), HardwareKey(hardwareKey), lic))
         {
             std::cout << "fail to save into = " << filepathImpl.str() << "\n";
         }
@@ -169,7 +169,7 @@ int main(int argc, char* argv[])
             std::cout << "done to save into = " << filepathImpl.str() << "\n";
             break;
         }
-    } while (true);
+    } while(true);
 
     std::cout << "please press any key\n";
     std::string buf;
