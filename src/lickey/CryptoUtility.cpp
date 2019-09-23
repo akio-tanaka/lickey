@@ -9,21 +9,21 @@
 #include <algorithm>
 // to remove warning C4996 for fopen() in openssl/applink.c
 #ifdef _WIN32
-#ifdef WIN32
-#define WIN32_PREDEFINED
-#else
-#define WIN32
-#endif
-#pragma warning(disable: 4996)
+    #ifdef WIN32
+        #define WIN32_PREDEFINED
+    #else
+        #define WIN32
+    #endif
+    #pragma warning(disable: 4996)
 #endif
 #include <openssl/applink.c>
 #ifdef WIN32
-#ifdef WIN32_PREDEFINED
-#undef WIN32_PREDEFINED
-#else
-#undef WIN32
-#endif
-#pragma warning(default: 4996)
+    #ifdef WIN32_PREDEFINED
+        #undef WIN32_PREDEFINED
+    #else
+        #undef WIN32
+    #endif
+    #pragma warning(default: 4996)
 #endif
 
 
@@ -32,7 +32,7 @@ namespace lickey
     void InitializeOpenSSL()
     {
         RAND_poll();
-        while (RAND_status() == 0)
+        while(RAND_status() == 0)
         {
             unsigned short rand_ret = rand() % 65536;
             RAND_seed(&rand_ret, sizeof rand_ret);
@@ -52,7 +52,7 @@ namespace lickey
         EVP_EncryptInit_ex(&en, EVP_aes_256_cbc(), nullptr, key, iv);
 
         EVP_EncryptUpdate(&en, dest, &c_len, (unsigned char*)data, static_cast<int>(datalen));
-        EVP_EncryptFinal_ex(&en, static_cast<unsigned char *>(dest + c_len), &f_len);
+        EVP_EncryptFinal_ex(&en, static_cast<unsigned char*>(dest + c_len), &f_len);
         EVP_CIPHER_CTX_cleanup(&en);
 
         destlen = (size_t)c_len + (size_t)f_len;
@@ -71,8 +71,8 @@ namespace lickey
         EVP_CIPHER_CTX_init(&de);
         EVP_DecryptInit_ex(&de, EVP_aes_256_cbc(), nullptr, key, iv);
 
-        EVP_DecryptUpdate(&de, static_cast<unsigned char *>(dest), &p_len, data, static_cast<int>(datalen));
-        EVP_DecryptFinal_ex(&de, static_cast<unsigned char *>(dest + p_len), &f_len);
+        EVP_DecryptUpdate(&de, static_cast<unsigned char*>(dest), &p_len, data, static_cast<int>(datalen));
+        EVP_DecryptFinal_ex(&de, static_cast<unsigned char*>(dest + p_len), &f_len);
 
         EVP_CIPHER_CTX_cleanup(&de);
 
@@ -118,8 +118,8 @@ namespace lickey
         const int datalen,
         std::string& str)
     {
-        BIO *bmem, *b64;
-        BUF_MEM *bptr;
+        BIO* bmem, *b64;
+        BUF_MEM* bptr;
 
         b64 = BIO_new(BIO_f_base64());
         bmem = BIO_new(BIO_s_mem());
@@ -128,7 +128,7 @@ namespace lickey
         BIO_flush(b64);
         BIO_get_mem_ptr(b64, &bptr);
 
-        char *buf = (char *)malloc(bptr->length);
+        char* buf = (char*)malloc(bptr->length);
         memcpy(buf, bptr->data, bptr->length - 1);
         buf[bptr->length - 1] = 0;
         BIO_free_all(b64);
@@ -143,8 +143,8 @@ namespace lickey
         const std::string& data,
         std::string& str)
     {
-        BIO *bmem, *b64;
-        BUF_MEM *bptr;
+        BIO* bmem, *b64;
+        BUF_MEM* bptr;
 
         b64 = BIO_new(BIO_f_base64());
         bmem = BIO_new(BIO_s_mem());
@@ -153,7 +153,7 @@ namespace lickey
         BIO_flush(b64);
         BIO_get_mem_ptr(b64, &bptr);
 
-        char *buf = (char *)malloc(bptr->length);
+        char* buf = (char*)malloc(bptr->length);
         memcpy(buf, bptr->data, bptr->length - 1);
         buf[bptr->length - 1] = 0;
         BIO_free_all(b64);
@@ -171,13 +171,13 @@ namespace lickey
     {
         data = static_cast<unsigned char*>(malloc(str.size()));
         datalen = static_cast<int>(str.size());
-        BIO *bmem = BIO_new_mem_buf(str.c_str(), static_cast<int>(str.size()));
-        BIO *b64 = BIO_new(BIO_f_base64());
+        BIO* bmem = BIO_new_mem_buf(str.c_str(), static_cast<int>(str.size()));
+        BIO* b64 = BIO_new(BIO_f_base64());
         BIO_set_flags(b64, BIO_FLAGS_BASE64_NO_NL);
         bmem = BIO_push(b64, bmem);
 
         const long n = BIO_read(bmem, data, datalen);
-        if (n > 0)
+        if(n > 0)
         {
             data[n] = 0;
             datalen = n;

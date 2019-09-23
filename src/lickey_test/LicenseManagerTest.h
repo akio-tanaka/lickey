@@ -13,7 +13,7 @@ BOOST_AUTO_TEST_CASE(Constructor01)
 {
     lickey::HardwareKeyGetter keyGetter;
     lickey::HardwareKeys keys = keyGetter();
-    if (keys.empty())
+    if(keys.empty())
     {
         return;
     }

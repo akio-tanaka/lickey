@@ -46,12 +46,12 @@ namespace
     {
         std::stringstream converted;
         converted << "feature "
-            << "name=" << featureName << " "
-            << "version=" << featureInfo.Version().Value() << " "
-            << "issue=" << ToString(featureInfo.IssueDate()) << " "
-            << "expire=" << ToString(featureInfo.ExpireDate()) << " "
-            << "num=" << featureInfo.NumLics() << " "
-            << "sign=" << featureInfo.Sign().Value();
+                  << "name=" << featureName << " "
+                  << "version=" << featureInfo.Version().Value() << " "
+                  << "issue=" << ToString(featureInfo.IssueDate()) << " "
+                  << "expire=" << ToString(featureInfo.ExpireDate()) << " "
+                  << "num=" << featureInfo.NumLics() << " "
+                  << "sign=" << featureInfo.Sign().Value();
         return converted.str();
     }
 }
@@ -64,7 +64,10 @@ namespace
 
     void Split(const std::string& line, std::vector<std::string>& tokens, const std::string delim = " ")
     {
-        const auto trim = [](std::string& str) { boost::trim(str); };
+        const auto trim = [](std::string & str)
+        {
+            boost::trim(str);
+        };
         boost::algorithm::split(tokens, line, boost::is_any_of(delim));
         boost::for_each(tokens, trim);
     }
@@ -74,20 +77,21 @@ namespace
         const std::vector<std::string>& tokens,
         FeatureTree& tree)
     {
-        for (size_t i = 0; i < tokens.size(); ++i)
+        for(size_t i = 0; i < tokens.size(); ++i)
         {
             std::vector<std::string> subTokens;
             Split(tokens[i], subTokens, "=");
-            if (2 > subTokens.size())
+            if(2 > subTokens.size())
             {
-                if (0 == subTokens.front().compare("feature"))
+                if(0 == subTokens.front().compare("feature"))
                 {
                     tree["feature"] = "feature";
                 }
                 continue;
             }
-            if (0 == subTokens.front().compare("sign"))
-            {   // because sign value can have "=", 
+            if(0 == subTokens.front().compare("sign"))
+            {
+                // because sign value can have "=",
                 tree["sign"] = tokens[i].substr(5, tokens[i].size() - 5);
             }
             else
@@ -104,28 +108,35 @@ namespace
         const std::vector<std::string>& lines,
         std::string& data)
     {
-        const auto isDataDelmiter = [](const std::string& line) {
+        const auto isDataDelmiter = [](const std::string & line)
+        {
             const std::string::size_type pos = line.find_first_of(DATA_SECTION_DELIMITER);
-            if (std::string::npos == pos)    return false;
-            if (0 != pos)    return false;
+            if(std::string::npos == pos)
+            {
+                return false;
+            }
+            if(0 != pos)
+            {
+                return false;
+            }
             return true;
         };
 
         bool doesDataExist = false;
         bool isInData = false;
         std::stringstream dataStream;
-        for (size_t i = 0; i < lines.size(); ++i)
+        for(size_t i = 0; i < lines.size(); ++i)
         {
-            if (isDataDelmiter(lines[i]))
+            if(isDataDelmiter(lines[i]))
             {
                 isInData = !isInData;
-                if (!isInData)
+                if(!isInData)
                 {
                     break;
                 }
                 continue;
             }
-            if (isInData)
+            if(isInData)
             {
                 dataStream << lines[i];
                 doesDataExist = true;
@@ -166,7 +177,7 @@ namespace
         return true;
     }
 
-    
+
     bool MakeFeatureSign(
         const std::string& featureName,
         const FeatureInfo& featureInfo,
@@ -198,14 +209,14 @@ namespace
         Date& lastUsedDate)
     {
         unsigned char encryptionKey[16];
-        if (!MakeEncryptionKey(key, vendorName, appName, firstFeatureSign, explicitSalt, encryptionKey))
+        if(!MakeEncryptionKey(key, vendorName, appName, firstFeatureSign, explicitSalt, encryptionKey))
         {
             LOG(error) << "fail to get key";
             return false;
         }
 
         unsigned char encryptionIv[16];
-        if (!MakeEncryptionIv(key, explicitSalt, encryptionKey, encryptionIv))
+        if(!MakeEncryptionIv(key, explicitSalt, encryptionKey, encryptionIv))
         {
             LOG(error) << "fail to get iv";
             return false;
@@ -221,7 +232,7 @@ namespace
         std::istringstream src(decryptedImplChar, std::ios::binary);
 
         const int validLen = CalcBase64EncodedSize(32) + 8;
-        if (static_cast<size_t>(validLen) > decryptedImplSize)
+        if(static_cast<size_t>(validLen) > decryptedImplSize)
         {
             LOG(error) << "invalid data section";
             return false;
@@ -237,7 +248,7 @@ namespace
         boost::scoped_array<char> scopedDateImpl(dateImpl);
         src.read(dateImpl, sizeof(char) * 8);
         dateImpl[8] = '\0';
-        if (!Load(lastUsedDate, dateImpl))
+        if(!Load(lastUsedDate, dateImpl))
         {
             LOG(error) << "fail to decrypt date because of invalid date";
             return false;
@@ -257,14 +268,14 @@ namespace
         std::string& encrepted)
     {
         unsigned char encryptionKey[16];
-        if (!MakeEncryptionKey(key, vendorName, appName, firstFeatureSign, explicitSalt, encryptionKey))
+        if(!MakeEncryptionKey(key, vendorName, appName, firstFeatureSign, explicitSalt, encryptionKey))
         {
             LOG(error) << "fail to get key";
             return false;
         }
 
         unsigned char encryptionIv[16];
-        if (!MakeEncryptionIv(key, explicitSalt, encryptionKey, encryptionIv))
+        if(!MakeEncryptionIv(key, explicitSalt, encryptionKey, encryptionIv))
         {
             LOG(error) << "fail to get iv";
             return false;
@@ -276,10 +287,10 @@ namespace
         std::ostringstream dst(std::ios::binary);
         dst.write(implicitSalt.Value().c_str(), sizeof(char) * implicitSalt.Value().size());
         dst.write(strDate.c_str(), sizeof(char) * strDate.size());
-        
+
         unsigned char ecryptedImpl[BUF_SIZE] = { '\0' };
         size_t ecryptedImplSize = BUF_SIZE;
-        Encrypt(dst.str().c_str(), dst.str().size(), encryptionKey, encryptionIv, ecryptedImpl, ecryptedImplSize);    
+        Encrypt(dst.str().c_str(), dst.str().size(), encryptionKey, encryptionIv, ecryptedImpl, ecryptedImplSize);
         EncodeBase64(ecryptedImpl, static_cast<int>(ecryptedImplSize), encrepted);
         return true;
     }
@@ -308,7 +319,10 @@ namespace lickey
 
     bool LicenseManager::Load(const std::string& filepath, const HardwareKey& key, License& license)
     {
-        auto IntoChar = [](unsigned char c) {return static_cast<char>(c); };
+        auto IntoChar = [](unsigned char c)
+        {
+            return static_cast<char>(c);
+        };
 
         licenseFilepath = filepath;
         isLicenseLorded = false;
@@ -316,24 +330,24 @@ namespace lickey
 
         LOG(info) << "start to load license file = " << filepath;
         std::vector<std::string> lines;
-        if (!ReadLines(filepath, lines))
+        if(!ReadLines(filepath, lines))
         {
             LOG(error) << "fail to open";
             return false;
         }
 
         // load features section
-        for (size_t i = 0; i < lines.size(); ++i)
+        for(size_t i = 0; i < lines.size(); ++i)
         {
             std::string featureName;
             FeatureInfo featureInfo;
-            if (!ConvertFeature(lines[i], featureName, featureInfo))
+            if(!ConvertFeature(lines[i], featureName, featureInfo))
             {
                 continue;
             }
             license.features[featureName] = featureInfo;
         }
-        if (license.features.empty())
+        if(license.features.empty())
         {
             LOG(error) << "no feature";
             return false;
@@ -341,7 +355,7 @@ namespace lickey
 
         // load date section
         std::string data;
-        if (!FindDataSection(lines, data))
+        if(!FindDataSection(lines, data))
         {
             LOG(error) << "no data sections";
             return false;
@@ -351,7 +365,7 @@ namespace lickey
         unsigned char* decoded = NULL;
         DecodeBase64(data, decoded, decodedSize);
         boost::scoped_array<unsigned char> scopedDecoded(decoded);
-        if (36 > decodedSize)
+        if(36 > decodedSize)
         {
             LOG(error) << "no information in data section";
             return false;
@@ -370,7 +384,7 @@ namespace lickey
         license.explicitSalt = saltImpl;
 
         int remainLen = decodedSize - saltLengthInBase64 - sizeof(unsigned int);
-        if (1 > remainLen)
+        if(1 > remainLen)
         {
             LOG(error) << "no encrypted data in data section";
             return false;
@@ -386,23 +400,23 @@ namespace lickey
         boost::scoped_array<unsigned char> scopedDecoded2(decoded2);
 
         std::string decrypted;
-        if (!::DecryptData(
-            key,
-            vendorName,
-            appName,
-            license.features.begin()->second.sign,
-            license.explicitSalt,
-            decoded2,
-            decodedSize2,
-            license.implicitSalt,
-            license.lastUsedDate))
+        if(!::DecryptData(
+                    key,
+                    vendorName,
+                    appName,
+                    license.features.begin()->second.sign,
+                    license.explicitSalt,
+                    decoded2,
+                    decodedSize2,
+                    license.implicitSalt,
+                    license.lastUsedDate))
         {
             LOG(error) << "fail to decrypt";
             return false;
         }
 
         // validate each feature
-        for (Features::iterator cit = license.features.begin(); cit != license.features.end(); ++cit)
+        for(Features::iterator cit = license.features.begin(); cit != license.features.end(); ++cit)
         {
             Hash checkSum;
             MakeFeatureSign(cit->first, cit->second, license.implicitSalt, checkSum);
@@ -420,12 +434,12 @@ namespace lickey
         const HardwareKey& key,
         License& license*/)
     {
-        if (!isLicenseLorded)
+        if(!isLicenseLorded)
         {
             LOG(error) << "license is not loaded";
             return false;
         }
-        if (loadedLicense.features.empty())
+        if(loadedLicense.features.empty())
         {
             LOG(error) << "no feature to generate license file";
             return false;
@@ -433,7 +447,7 @@ namespace lickey
 
         MakeSalt(loadedLicense.explicitSalt);
         MakeSalt(loadedLicense.implicitSalt);
-        for (Features::iterator it = loadedLicense.features.begin(); it != loadedLicense.features.end(); ++it)
+        for(Features::iterator it = loadedLicense.features.begin(); it != loadedLicense.features.end(); ++it)
         {
             Hash sign;
             MakeFeatureSign(it->first, it->second, loadedLicense.implicitSalt, sign);
@@ -443,14 +457,14 @@ namespace lickey
         std::string encrypted;
         Date today;
         SetToday(today);
-        if (!EncryptData(
-            loadedLicense.key,
-            vendorName,
-            appName,
-            loadedLicense.features.begin()->second.sign,
-            loadedLicense.explicitSalt,
-            loadedLicense.implicitSalt,
-            today, encrypted))
+        if(!EncryptData(
+                    loadedLicense.key,
+                    vendorName,
+                    appName,
+                    loadedLicense.features.begin()->second.sign,
+                    loadedLicense.explicitSalt,
+                    loadedLicense.implicitSalt,
+                    today, encrypted))
         {
             LOG(error) << "fail to make data section";
             return false;
@@ -465,12 +479,12 @@ namespace lickey
         EncodeBase64(dataSection.str(), encrypted);
 
         std::ofstream out(licenseFilepath.c_str());
-        if (!out)
+        if(!out)
         {
             LOG(error) << "fail to open = " << licenseFilepath;
             return false;
         }
-        for (Features::const_iterator cit = loadedLicense.features.begin(); cit != loadedLicense.features.end(); ++cit)
+        for(Features::const_iterator cit = loadedLicense.features.begin(); cit != loadedLicense.features.end(); ++cit)
         {
             out << Convert(cit->first, cit->second) << "\n";
         }
@@ -517,7 +531,7 @@ namespace lickey
     {
         std::vector<std::string> tokens;
         Split(line, tokens);
-        if (tokens.empty())
+        if(tokens.empty())
         {
             return false;
         }
@@ -525,13 +539,13 @@ namespace lickey
         FeatureTree featureTree;
         MakeFeatureTree(tokens, featureTree);
         FTItr it = featureTree.find("feature");
-        if (featureTree.end() == it)
+        if(featureTree.end() == it)
         {
             return false;
         }
 
         it = featureTree.find("name");
-        if (featureTree.end() == it)
+        if(featureTree.end() == it)
         {
             LOG(error) << "name not found in feature line (name = " << featureName << ")\n";
             return false;
@@ -540,7 +554,7 @@ namespace lickey
 
 
         it = featureTree.find("version");
-        if (featureTree.end() == it)
+        if(featureTree.end() == it)
         {
             LOG(error) << "version not found in feature line (name = " << featureName << ")\n";
             return false;
@@ -548,31 +562,31 @@ namespace lickey
         featureInfo.version.version = it->second;
 
         it = featureTree.find("issue");
-        if (featureTree.end() == it)
+        if(featureTree.end() == it)
         {
             LOG(error) << "issue not found in feature line (name = " << featureName << ")\n";
             return false;
         }
-        if (!lickey::Load(featureInfo.issueDate, it->second))
+        if(!lickey::Load(featureInfo.issueDate, it->second))
         {
             LOG(error) << "invalid issue date = " << it->second << " (name = " << featureName << ")\n";
             return false;
         }
 
         it = featureTree.find("expire");
-        if (featureTree.end() == it)
+        if(featureTree.end() == it)
         {
             LOG(error) << "expire not found in feature line (name = " << featureName << ")\n";
             return false;
         }
-        if (!lickey::Load(featureInfo.expireDate, it->second))
+        if(!lickey::Load(featureInfo.expireDate, it->second))
         {
             LOG(error) << "invalid expire date = " << it->second << " (name = " << featureName << ")\n";
             return false;
         }
 
         it = featureTree.find("num");
-        if (featureTree.end() == it)
+        if(featureTree.end() == it)
         {
             LOG(error) << "num not found in feature line (name = " << featureName << ")\n";
             return false;
@@ -580,7 +594,7 @@ namespace lickey
         featureInfo.numLics = boost::lexical_cast<int>(it->second);
 
         it = featureTree.find("sign");
-        if (featureTree.end() == it)
+        if(featureTree.end() == it)
         {
             LOG(error) << "sign not found in feature line (name = " << featureName << ")\n";
             return false;

@@ -11,7 +11,7 @@ namespace lickey
             date = boost::gregorian::from_undelimited_string(str);
             return true;
         }
-        catch (...)
+        catch(...)
         {
             LOG(error) << "invalid date = " << str;
             return false;
