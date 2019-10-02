@@ -1,10 +1,10 @@
 # usage
 
-## embded licky into your code
+## put lickey into your code
 
 ...
 
-### lincense your functions
+### license your functions
 
 ...
 
@@ -31,7 +31,7 @@ data=XXXX
 - **version** is option version of application (integer)
 - **issue** is date when this license file is issued (8 digit integer)
 - **expire** is date when this license is expired(8 digit integer)
-- **num** is how many application can be launched (reserved for floating / does not work for nodelock)
+- **num** is how application can be launched (reserved for floating / does not work for nodelock)
 - **sign** is check sum whether this feature is valid or not
 \-- this sign is hash generated with this line (without "feature" and sign) and implicit salt by SHA - 256 as base64
 
@@ -50,7 +50,7 @@ data=XXXX
 ## salt
 
 - both explicit and implicit salt are updated for each launching application
-- key to decrypt "data" section is generated with MD5 ("hadrware information" + explicit salt)
+- key to decrypt "data" section is generated with MD5 ("hardware information" + explicit salt)
 - iv to decrypt "data" section is generated with MD5 (key + "hardware information" + explicit salt)
 
 ## vendorName
