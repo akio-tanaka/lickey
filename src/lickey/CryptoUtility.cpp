@@ -14,6 +14,7 @@
     #else
         #define WIN32
     #endif
+    #pragma warning(push)
     #pragma warning(disable: 4996)
 #endif
 #include <openssl/applink.c>
@@ -23,7 +24,7 @@
     #else
         #undef WIN32
     #endif
-    #pragma warning(default: 4996)
+    #pragma warning(pop)
 #endif
 
 
