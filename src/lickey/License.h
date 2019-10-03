@@ -9,7 +9,7 @@ namespace lickey
     {
         friend class LicenseManager;
 
-        unsigned int fileVersion;
+        char fileVersion;
         Features features;
         HardwareKey key;
         Salt explicitSalt;

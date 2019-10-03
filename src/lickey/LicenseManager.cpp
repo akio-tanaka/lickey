@@ -496,7 +496,7 @@ namespace lickey
         }
 
         std::ostringstream dataSection(std::ios::binary);
-        unsigned int fileVersion = VERSION();
+        char fileVersion = VERSION();
         std::string explictSaltValue = loadedLicense.explicitSalt.Value();
         dataSection.write((const char*)&fileVersion, sizeof(unsigned int));
         dataSection.write(explictSaltValue.c_str(), sizeof(char) * explictSaltValue.size());
