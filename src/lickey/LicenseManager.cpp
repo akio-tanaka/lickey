@@ -241,7 +241,7 @@ namespace
         char* saltImpl = (char*)malloc(sizeof(char) * CalcBase64EncodedSize(32) + 1);
         if (saltImpl == nullptr)
         {
-          assert (!(saltImpl == nullptr));  
+          assert (saltImpl);  
         } else {
           boost::scoped_array<char> scopedSaltImpl(saltImpl);
           src.read(saltImpl, sizeof(char) * CalcBase64EncodedSize(32));
@@ -252,7 +252,7 @@ namespace
         char* dateImpl = (char*)malloc(sizeof(char) * 8 + 1);
         if (dateImpl == nullptr)
         {
-          assert (!(dateImpl == nullptr));  
+          assert (dateImpl);  
         } else {
           boost::scoped_array<char> scopedDateImpl(dateImpl);
           src.read(dateImpl, sizeof(char) * 8);
@@ -392,7 +392,7 @@ namespace lickey
         char* saltImpl = (char*)malloc(sizeof(char) * saltLengthInBase64 + 1);
         if (saltImpl == nullptr)
         {
-          assert (!(saltImpl == nullptr));  
+          assert (saltImpl);  
         } else {
           boost::scoped_array<char> scopedSaltImpl(saltImpl);
           dataSection.read(saltImpl, sizeof(char) * saltLengthInBase64);
@@ -409,7 +409,7 @@ namespace lickey
         char* base64Encrypted = (char*)malloc(sizeof(char) * remainLen + 1);
         if (base64Encrypted == nullptr)
         {
-          assert (!(base64Encrypted == nullptr));  
+          assert (base64Encrypted);  
         } else {
           boost::scoped_array<char> scpdBase64Encrypted(base64Encrypted);
           dataSection.read(base64Encrypted, sizeof(char) * remainLen);

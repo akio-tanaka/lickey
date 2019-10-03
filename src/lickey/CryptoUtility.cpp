@@ -132,16 +132,15 @@ namespace lickey
         char* buf = (char*)malloc(bptr->length);
         if (buf == nullptr)
         {
-          assert (!(buf == nullptr));  
+          assert (buf);  
         } else {
           memcpy(buf, bptr->data, bptr->length - 1);
           buf[bptr->length - 1] = 0;
           BIO_free_all(b64);
           str = buf;
           free(buf);
+          str.erase(std::remove(str.begin(), str.end(), '\n'), str.end());
 		    }
-
-      str.erase(std::remove(str.begin(), str.end(), '\n'), str.end());
     }
 
 
@@ -162,16 +161,15 @@ namespace lickey
         char* buf = (char*)malloc(bptr->length);
         if (buf == nullptr)
         {
-          assert (!(buf == nullptr));  
+          assert (buf);  
         } else {
           memcpy(buf, bptr->data, bptr->length - 1);
           buf[bptr->length - 1] = 0;
           BIO_free_all(b64);
           str = buf;
           free(buf);
+          str.erase(std::remove(str.begin(), str.end(), '\n'), str.end());
 	      }
-
-        str.erase(std::remove(str.begin(), str.end(), '\n'), str.end());
     }
 
 
