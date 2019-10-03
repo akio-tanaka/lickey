@@ -62,7 +62,7 @@ namespace
     typedef FeatureTree::iterator FTItr;
 
 
-    void Split(const std::string& line, std::vector<std::string>& tokens, const std::string delim = " ")
+    void Split(const std::string& line, std::vector<std::string>& tokens, const std::string &delim = " ")
     {
         const auto trim = [](std::string & str)
         {
