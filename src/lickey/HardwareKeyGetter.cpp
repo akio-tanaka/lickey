@@ -27,7 +27,7 @@ namespace lickey
         if(ERROR_BUFFER_OVERFLOW == GetAdaptersInfo(adapterInfo, &outbufferLength))
         {
             free(adapterInfo);
-            adapterInfo = (IP_ADAPTER_INFO*)malloc(outbufferLength);
+            adapterInfo = (IP_ADAPTER_INFO*)malloc((size_t)outbufferLength);
             if(!adapterInfo)
             {
                 return keys;
