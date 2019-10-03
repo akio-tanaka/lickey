@@ -192,7 +192,7 @@ namespace lickey
 
     bool MakeSalt(Salt& salt)
     {
-        unsigned char tmp[32];
+        unsigned char tmp[32] = {0};
 
         std::string encoded;
         EncodeBase64(tmp, 32, encoded);
