@@ -4,7 +4,7 @@ namespace lickey
 {
     class Version
     {
-        unsigned int version;
+        char version;
     public:
         static Version& GetInstance();
         virtual ~Version();

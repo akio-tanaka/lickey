@@ -14,6 +14,7 @@
     #else
         #define WIN32
     #endif
+    #pragma warning(push)
     #pragma warning(disable: 4996)
 #endif
 #include <openssl/applink.c>
@@ -23,7 +24,7 @@
     #else
         #undef WIN32
     #endif
-    #pragma warning(default: 4996)
+    #pragma warning(pop)
 #endif
 
 
@@ -44,15 +45,15 @@ namespace lickey
     {
         EVP_CIPHER_CTX en;
         int f_len = 0;
-        int c_len = static_cast<int>(destlen);
+        int c_len = (int)(destlen);
 
         memset(dest, 0x00, destlen);
 
         EVP_CIPHER_CTX_init(&en);
         EVP_EncryptInit_ex(&en, EVP_aes_256_cbc(), nullptr, key, iv);
 
-        EVP_EncryptUpdate(&en, dest, &c_len, (unsigned char*)data, static_cast<int>(datalen));
-        EVP_EncryptFinal_ex(&en, static_cast<unsigned char*>(dest + c_len), &f_len);
+        EVP_EncryptUpdate(&en, dest, (int*)&c_len, (unsigned char*)data, (int)(datalen));
+        EVP_EncryptFinal_ex(&en, static_cast<unsigned char*>(dest + (unsigned char)c_len), &f_len);
         EVP_CIPHER_CTX_cleanup(&en);
 
         destlen = (size_t)c_len + (size_t)f_len;
@@ -72,7 +73,7 @@ namespace lickey
         EVP_DecryptInit_ex(&de, EVP_aes_256_cbc(), nullptr, key, iv);
 
         EVP_DecryptUpdate(&de, static_cast<unsigned char*>(dest), &p_len, data, static_cast<int>(datalen));
-        EVP_DecryptFinal_ex(&de, static_cast<unsigned char*>(dest + p_len), &f_len);
+        EVP_DecryptFinal_ex(&de, static_cast<unsigned char*>(dest + (unsigned char)p_len), &f_len);
 
         EVP_CIPHER_CTX_cleanup(&de);
 
@@ -129,13 +130,19 @@ namespace lickey
         BIO_get_mem_ptr(b64, &bptr);
 
         char* buf = (char*)malloc(bptr->length);
-        memcpy(buf, bptr->data, bptr->length - 1);
-        buf[bptr->length - 1] = 0;
-        BIO_free_all(b64);
-        str = buf;
-        free(buf);
-
-        str.erase(std::remove(str.begin(), str.end(), '\n'), str.end());
+        if (buf == nullptr)
+        {
+            assert (buf);
+        }
+        else
+        {
+            memcpy(buf, bptr->data, bptr->length - 1);
+            buf[bptr->length - 1] = 0;
+            BIO_free_all(b64);
+            str = buf;
+            free(buf);
+            str.erase(std::remove(str.begin(), str.end(), '\n'), str.end());
+        }
     }
 
 
@@ -154,13 +161,19 @@ namespace lickey
         BIO_get_mem_ptr(b64, &bptr);
 
         char* buf = (char*)malloc(bptr->length);
-        memcpy(buf, bptr->data, bptr->length - 1);
-        buf[bptr->length - 1] = 0;
-        BIO_free_all(b64);
-        str = buf;
-        free(buf);
-
-        str.erase(std::remove(str.begin(), str.end(), '\n'), str.end());
+        if (buf == nullptr)
+        {
+            assert (buf);
+        }
+        else
+        {
+            memcpy(buf, bptr->data, bptr->length - 1);
+            buf[bptr->length - 1] = 0;
+            BIO_free_all(b64);
+            str = buf;
+            free(buf);
+            str.erase(std::remove(str.begin(), str.end(), '\n'), str.end());
+        }
     }
 
 
@@ -176,10 +189,11 @@ namespace lickey
         BIO_set_flags(b64, BIO_FLAGS_BASE64_NO_NL);
         bmem = BIO_push(b64, bmem);
 
-        const long n = BIO_read(bmem, data, datalen);
+        int n = BIO_read(bmem, data, datalen);
         if(n > 0)
         {
-            data[n] = 0;
+            size_t it = (size_t)n; // memsize
+            data[it] = 0;
             datalen = n;
         }
         else
@@ -192,7 +206,7 @@ namespace lickey
 
     bool MakeSalt(Salt& salt)
     {
-        unsigned char tmp[32];
+        unsigned char tmp[32] = {0};
 
         std::string encoded;
         EncodeBase64(tmp, 32, encoded);

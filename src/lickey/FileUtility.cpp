@@ -8,7 +8,7 @@ namespace lickey
 {
     std::string GetExtension(const std::string& filePath)
     {
-        std::string::size_type pos = filePath.find_last_of(".");
+        std::string::size_type pos = filePath.find_last_of('.');
         if(std::string::npos == pos)
         {
             return "";
@@ -19,7 +19,7 @@ namespace lickey
 
     std::string GetBaseFilePath(const std::string& filePath)
     {
-        std::string::size_type pos = filePath.find_last_of(".");
+        std::string::size_type pos = filePath.find_last_of('.');
         if(std::string::npos == pos)
         {
             return filePath;
@@ -30,7 +30,7 @@ namespace lickey
 
     std::string GetFolderPath(const std::string& filePath)
     {
-        std::string::size_type pos = filePath.find_last_of("\\");
+        std::string::size_type pos = filePath.find_last_of('\\');
         if(std::string::npos == pos)
         {
             return "";
@@ -41,7 +41,7 @@ namespace lickey
 
     std::string GetFilename(const std::string& filePath)
     {
-        std::string::size_type pos = filePath.find_last_of("\\");
+        std::string::size_type pos = filePath.find_last_of('\\');
         if(std::string::npos == pos)
         {
             return filePath;
@@ -68,7 +68,7 @@ namespace lickey
 
     std::string GivePostfix(const std::string& filepath, const std::string& postfix)
     {
-        size_t pos = filepath.find_last_of(".");
+        size_t pos = filepath.find_last_of('.');
         std::string ans = std::string::npos == pos
                           ? filepath + "_" + postfix
                           : filepath.substr(0, pos) + "_" + postfix + filepath.substr(pos, filepath.size() - pos);
@@ -78,7 +78,7 @@ namespace lickey
 
     std::string ChangeExtension(const std::string& filepath, const std::string& newExt)
     {
-        std::string::size_type pos = filepath.find_last_of(".");
+        std::string::size_type pos = filepath.find_last_of('.');
         if(std::string::npos == pos)
         {
             return filepath + "." + newExt;

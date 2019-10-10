@@ -62,7 +62,7 @@ namespace
     typedef FeatureTree::iterator FTItr;
 
 
-    void Split(const std::string& line, std::vector<std::string>& tokens, const std::string delim = " ")
+    void Split(const std::string& line, std::vector<std::string>& tokens, const std::string &delim = " ")
     {
         const auto trim = [](std::string & str)
         {
@@ -237,23 +237,38 @@ namespace
             LOG(error) << "invalid data section";
             return false;
         }
-
-        char* saltImpl = (char*)malloc(sizeof(char) * CalcBase64EncodedSize(32) + 1);
-        boost::scoped_array<char> scopedSaltImpl(saltImpl);
-        src.read(saltImpl, sizeof(char) * CalcBase64EncodedSize(32));
-        saltImpl[CalcBase64EncodedSize(32)] = '\0';
-        implicitSalt = saltImpl;
+        char* saltImpl = (char*)malloc((size_t)(sizeof(char) * (size_t)CalcBase64EncodedSize(32) + 1));
+        if (saltImpl == nullptr)
+        {
+            assert (saltImpl);
+        }
+        else
+        {
+            boost::scoped_array<char> scopedSaltImpl(saltImpl);
+            src.read(saltImpl, (int)sizeof(char) * CalcBase64EncodedSize(32));
+            size_t it = (size_t)CalcBase64EncodedSize(32); //memsize
+            saltImpl[it] = '\0';
+            implicitSalt = saltImpl;
+        }
 
         char* dateImpl = (char*)malloc(sizeof(char) * 8 + 1);
-        boost::scoped_array<char> scopedDateImpl(dateImpl);
-        src.read(dateImpl, sizeof(char) * 8);
-        dateImpl[8] = '\0';
-        if(!Load(lastUsedDate, dateImpl))
+        if (dateImpl == nullptr)
         {
-            LOG(error) << "fail to decrypt date because of invalid date";
-            return false;
+            assert (dateImpl);
         }
-        return true;
+        else
+        {
+            boost::scoped_array<char> scopedDateImpl(dateImpl);
+            src.read(dateImpl, sizeof(char) * 8);
+            dateImpl[8] = '\0';
+            if(!Load(lastUsedDate, dateImpl))
+            {
+                LOG(error) << "fail to decrypt date because of invalid date";
+                return false;
+            }
+            return true;
+        }
+        return false;
     }
 
 
@@ -372,60 +387,80 @@ namespace lickey
         }
 
         std::string dataBuffer(decodedSize, '\0');
-        std::transform(decoded, decoded + decodedSize, dataBuffer.begin(), IntoChar);
+        std::transform(decoded, decoded + (unsigned char)decodedSize, dataBuffer.begin(), IntoChar);
         std::istringstream dataSection(dataBuffer, std::ios::binary);
 
         dataSection.read((char*)&license.fileVersion, sizeof(unsigned int));
-        int saltLengthInBase64 = CalcBase64EncodedSize(32);
-        char* saltImpl = (char*)malloc(sizeof(char) * saltLengthInBase64 + 1);
-        boost::scoped_array<char> scopedSaltImpl(saltImpl);
-        dataSection.read(saltImpl, sizeof(char) * saltLengthInBase64);
-        saltImpl[saltLengthInBase64] = '\0';
-        license.explicitSalt = saltImpl;
 
-        int remainLen = decodedSize - saltLengthInBase64 - sizeof(unsigned int);
+        int saltLengthInBase64 = CalcBase64EncodedSize(32);
+        char* saltImpl = (char*)malloc((size_t)(sizeof(char) * (size_t)saltLengthInBase64 + 1));
+        if (saltImpl == nullptr)
+        {
+            assert (saltImpl);
+        }
+        else
+        {
+            boost::scoped_array<char> scopedSaltImpl(saltImpl);
+            dataSection.read(saltImpl, (int)sizeof(char) * saltLengthInBase64);
+            size_t it = (size_t)saltLengthInBase64; //memsize
+            saltImpl[it] = '\0';
+            license.explicitSalt = saltImpl;
+        }
+
+        int remainLen = decodedSize - saltLengthInBase64 - (int)sizeof(unsigned int);
         if(1 > remainLen)
         {
             LOG(error) << "no encrypted data in data section";
             return false;
         }
-        char* base64Encrypted = (char*)malloc(sizeof(char) * remainLen + 1);
-        boost::scoped_array<char> scpdBase64Encrypted(base64Encrypted);
-        dataSection.read(base64Encrypted, sizeof(char) * remainLen);
-        base64Encrypted[remainLen] = '\0';
-
-        int decodedSize2 = 0;
-        unsigned char* decoded2 = NULL;
-        DecodeBase64(base64Encrypted, decoded2, decodedSize2);
-        boost::scoped_array<unsigned char> scopedDecoded2(decoded2);
-
-        std::string decrypted;
-        if(!::DecryptData(
-                    key,
-                    vendorName,
-                    appName,
-                    license.features.begin()->second.sign,
-                    license.explicitSalt,
-                    decoded2,
-                    decodedSize2,
-                    license.implicitSalt,
-                    license.lastUsedDate))
+        char* base64Encrypted = (char*)malloc((size_t)(sizeof(char) * (size_t)remainLen + 1));
+        if (base64Encrypted == nullptr)
         {
-            LOG(error) << "fail to decrypt";
-            return false;
+            assert (base64Encrypted);
         }
-
-        // validate each feature
-        for(Features::iterator cit = license.features.begin(); cit != license.features.end(); ++cit)
+        else
         {
-            Hash checkSum;
-            MakeFeatureSign(cit->first, cit->second, license.implicitSalt, checkSum);
-            cit->second.checkSum = checkSum;
-        }
+            boost::scoped_array<char> scpdBase64Encrypted(base64Encrypted);
+            dataSection.read(base64Encrypted, (int)sizeof(char) * remainLen);
+            size_t it = (size_t)remainLen; //memsize
+            base64Encrypted[it] = '\0';
 
-        loadedLicense = license;
-        isLicenseLorded = true;
-        return true;
+            int decodedSize2 = 0;
+            unsigned char* decoded2 = NULL;
+            DecodeBase64(base64Encrypted, decoded2, decodedSize2);
+
+            boost::scoped_array<unsigned char> scopedDecoded2(decoded2);
+
+
+            std::string decrypted;
+            if(!::DecryptData(
+                        key,
+                        vendorName,
+                        appName,
+                        license.features.begin()->second.sign,
+                        license.explicitSalt,
+                        decoded2,
+                        (const size_t)decodedSize2,
+                        license.implicitSalt,
+                        license.lastUsedDate))
+            {
+                LOG(error) << "fail to decrypt";
+                return false;
+            }
+
+            // validate each feature
+            for(Features::iterator cit = license.features.begin(); cit != license.features.end(); ++cit)
+            {
+                Hash checkSum;
+                MakeFeatureSign(cit->first, cit->second, license.implicitSalt, checkSum);
+                cit->second.checkSum = checkSum;
+            }
+
+            loadedLicense = license;
+            isLicenseLorded = true;
+            return true;
+        }
+        return false;
     }
 
 
@@ -471,7 +506,7 @@ namespace lickey
         }
 
         std::ostringstream dataSection(std::ios::binary);
-        unsigned int fileVersion = VERSION();
+        char fileVersion = VERSION();
         std::string explictSaltValue = loadedLicense.explicitSalt.Value();
         dataSection.write((const char*)&fileVersion, sizeof(unsigned int));
         dataSection.write(explictSaltValue.c_str(), sizeof(char) * explictSaltValue.size());
