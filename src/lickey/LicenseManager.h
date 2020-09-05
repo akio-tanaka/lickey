@@ -19,6 +19,7 @@ namespace lickey
     public:
         LicenseManager(const std::string& vn, const std::string& an);
         virtual ~LicenseManager();
+        bool isLoadLicenseDataSection(const HardwareKey& key, License& license, std::vector<std::string> lines);
         bool isLicenseRead(const std::string& filepath, const HardwareKey& key, License& license);
 
         bool Load(const std::string& filepath, const HardwareKey& key, License& license);

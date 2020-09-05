@@ -338,6 +338,99 @@ namespace lickey
 	}
 
 
+	bool LicenseManager::isLoadLicenseDataSection(const HardwareKey& key, License& license, std::vector<std::string> lines)
+	{
+		std::string data;
+		if (FindDataSection(lines, data))
+		{
+			int decodedSize = 0;
+			unsigned char* decoded = NULL;
+			DecodeBase64(data, decoded, decodedSize);
+			boost::scoped_array<unsigned char> scopedDecoded(decoded);
+			if (36 > decodedSize)
+			{
+				LOG(error) << "no information in data section";
+				return false;
+			}
+
+			std::string dataBuffer(decodedSize, '\0');
+			std::transform(decoded, decoded + (unsigned char)decodedSize, dataBuffer.begin(), IntoChar);
+			std::istringstream dataSection(dataBuffer, std::ios::binary);
+
+			dataSection.read((char*)&license.fileVersion, sizeof(unsigned int));
+
+			int saltLengthInBase64 = CalcBase64EncodedSize(32);
+			char* saltImpl = (char*)malloc((size_t)(sizeof(char) * (size_t)saltLengthInBase64 + 1));
+			if (saltImpl == nullptr)
+			{
+				assert(saltImpl);
+			}
+			else
+			{
+				boost::scoped_array<char> scopedSaltImpl(saltImpl);
+				dataSection.read(saltImpl, (int)sizeof(char) * saltLengthInBase64);
+				size_t it = (size_t)saltLengthInBase64; //memsize
+				saltImpl[it] = '\0';
+				license.explicitSalt = saltImpl;
+			}
+
+			int remainLen = decodedSize - saltLengthInBase64 - (int)sizeof(unsigned int);
+			if (1 > remainLen)
+			{
+				LOG(error) << "no encrypted data in data section";
+				return false;
+			}
+			char* base64Encrypted = (char*)malloc((size_t)(sizeof(char) * (size_t)remainLen + 1));
+			if (base64Encrypted == nullptr)
+			{
+				assert(base64Encrypted);
+			}
+			else
+			{
+				boost::scoped_array<char> scpdBase64Encrypted(base64Encrypted);
+				dataSection.read(base64Encrypted, (int)sizeof(char) * remainLen);
+				size_t it = (size_t)remainLen; //memsize
+				base64Encrypted[it] = '\0';
+
+				int decodedSize2 = 0;
+				unsigned char* decoded2 = NULL;
+				DecodeBase64(base64Encrypted, decoded2, decodedSize2);
+
+				boost::scoped_array<unsigned char> scopedDecoded2(decoded2);
+
+
+				if (DecryptData(
+					key,
+					vendorName,
+					appName,
+					license.features.begin()->second.sign,
+					license.explicitSalt,
+					decoded2,
+					(const size_t)decodedSize2,
+					license.implicitSalt,
+					license.lastUsedDate))
+				{
+					// validate each feature
+					for (Features::iterator cit = license.features.begin(); cit != license.features.end(); ++cit)
+					{
+						Hash checkSum;
+						MakeFeatureSign(cit->first, cit->second, license.implicitSalt, checkSum);
+						cit->second.checkSum = checkSum;
+					}
+
+					loadedLicense = license;
+					isLicenseLorded = true;
+					return true;
+				}
+				LOG(error) << "fail to decrypt";
+				return false;
+			}
+			return false;
+		}
+		LOG(error) << "no data sections";
+		return false;
+	}
+
 	bool LicenseManager::isLicenseRead(const std::string& filepath, const HardwareKey& key, License& license)
 	{
 		std::vector<std::string> lines;
@@ -360,95 +453,7 @@ namespace lickey
 			}
 
 			// load date section
-			std::string data;
-			if (FindDataSection(lines, data))
-			{
-				int decodedSize = 0;
-				unsigned char* decoded = NULL;
-				DecodeBase64(data, decoded, decodedSize);
-				boost::scoped_array<unsigned char> scopedDecoded(decoded);
-				if (36 > decodedSize)
-				{
-					LOG(error) << "no information in data section";
-					return false;
-				}
-
-				std::string dataBuffer(decodedSize, '\0');
-				std::transform(decoded, decoded + (unsigned char)decodedSize, dataBuffer.begin(), IntoChar);
-				std::istringstream dataSection(dataBuffer, std::ios::binary);
-
-				dataSection.read((char*)&license.fileVersion, sizeof(unsigned int));
-
-				int saltLengthInBase64 = CalcBase64EncodedSize(32);
-				char* saltImpl = (char*)malloc((size_t)(sizeof(char) * (size_t)saltLengthInBase64 + 1));
-				if (saltImpl == nullptr)
-				{
-					assert(saltImpl);
-				}
-				else
-				{
-					boost::scoped_array<char> scopedSaltImpl(saltImpl);
-					dataSection.read(saltImpl, (int)sizeof(char) * saltLengthInBase64);
-					size_t it = (size_t)saltLengthInBase64; //memsize
-					saltImpl[it] = '\0';
-					license.explicitSalt = saltImpl;
-				}
-
-				int remainLen = decodedSize - saltLengthInBase64 - (int)sizeof(unsigned int);
-				if (1 > remainLen)
-				{
-					LOG(error) << "no encrypted data in data section";
-					return false;
-				}
-				char* base64Encrypted = (char*)malloc((size_t)(sizeof(char) * (size_t)remainLen + 1));
-				if (base64Encrypted == nullptr)
-				{
-					assert(base64Encrypted);
-				}
-				else
-				{
-					boost::scoped_array<char> scpdBase64Encrypted(base64Encrypted);
-					dataSection.read(base64Encrypted, (int)sizeof(char) * remainLen);
-					size_t it = (size_t)remainLen; //memsize
-					base64Encrypted[it] = '\0';
-
-					int decodedSize2 = 0;
-					unsigned char* decoded2 = NULL;
-					DecodeBase64(base64Encrypted, decoded2, decodedSize2);
-
-					boost::scoped_array<unsigned char> scopedDecoded2(decoded2);
-
-
-					if (DecryptData(
-						key,
-						vendorName,
-						appName,
-						license.features.begin()->second.sign,
-						license.explicitSalt,
-						decoded2,
-						(const size_t)decodedSize2,
-						license.implicitSalt,
-						license.lastUsedDate))
-					{
-						// validate each feature
-						for (Features::iterator cit = license.features.begin(); cit != license.features.end(); ++cit)
-						{
-							Hash checkSum;
-							MakeFeatureSign(cit->first, cit->second, license.implicitSalt, checkSum);
-							cit->second.checkSum = checkSum;
-						}
-
-						loadedLicense = license;
-						isLicenseLorded = true;
-						return true;
-					}
-					LOG(error) << "fail to decrypt";
-					return false;
-				}
-				return false;
-			}
-			LOG(error) << "no data sections";
-			return false;
+			return isLoadLicenseDataSection(key, license, lines);
 		}
 		LOG(error) << "fail to open";
 		return false;
