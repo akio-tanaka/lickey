@@ -367,7 +367,7 @@ namespace lickey
 		return false;
 	}
 
-	bool LicenseManager::isLicenseDataSection(const HardwareKey& key, License& license, std::vector<std::string> lines)
+	bool LicenseManager::findLicenseDataSection(const HardwareKey& key, License& license, std::vector<std::string> lines)
 	{
 		std::string data;
 		if (FindDataSection(lines, data))
@@ -458,7 +458,7 @@ namespace lickey
 			}
 
 			// load date section
-			return isLicenseDataSection(key, license, lines);
+			return findLicenseDataSection(key, license, lines);
 		}
 		LOG(error) << "fail to open";
 		return false;
