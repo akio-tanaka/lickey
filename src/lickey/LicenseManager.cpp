@@ -467,66 +467,67 @@ namespace lickey
 
 	bool LicenseManager::Update()
 	{
-		if (!isLicenseLoaded)
+		if (isLicenseLoaded)
 		{
-			LOG(error) << "license is not loaded";
-			return false;
-		}
-		if (loadedLicense.features.empty())
-		{
-			LOG(error) << "no feature to generate license file";
-			return false;
-		}
+			if (loadedLicense.features.empty())
+			{
+				LOG(error) << "no feature to generate license file";
+				return false;
+			}
 
-		MakeSalt(loadedLicense.explicitSalt);
-		MakeSalt(loadedLicense.implicitSalt);
-		for (Features::iterator it = loadedLicense.features.begin(); it != loadedLicense.features.end(); ++it)
-		{
-			Hash sign;
-			MakeFeatureSign(it->first, it->second, loadedLicense.implicitSalt, sign);
-			it->second.sign = sign;
-		}
+			MakeSalt(loadedLicense.explicitSalt);
+			MakeSalt(loadedLicense.implicitSalt);
+			for (Features::iterator it = loadedLicense.features.begin(); it != loadedLicense.features.end(); ++it)
+			{
+				Hash sign;
+				MakeFeatureSign(it->first, it->second, loadedLicense.implicitSalt, sign);
+				it->second.sign = sign;
+			}
 
-		std::string encrypted;
-		Date today;
-		SetToday(today);
-		if (!EncryptData(
-			loadedLicense.key,
-			vendorName,
-			appName,
-			loadedLicense.features.begin()->second.sign,
-			loadedLicense.explicitSalt,
-			loadedLicense.implicitSalt,
-			today, encrypted))
-		{
-			LOG(error) << "fail to make data section";
-			return false;
-		}
+			std::string encrypted;
+			Date today;
+			SetToday(today);
+			if (!EncryptData(
+				loadedLicense.key,
+				vendorName,
+				appName,
+				loadedLicense.features.begin()->second.sign,
+				loadedLicense.explicitSalt,
+				loadedLicense.implicitSalt,
+				today, encrypted))
+			{
+				LOG(error) << "fail to make data section";
+				return false;
+			}
 
-		std::ostringstream dataSection(std::ios::binary);
-		char fileVersion = VERSION();
-		std::string explictSaltValue = loadedLicense.explicitSalt.Value();
-		dataSection.write((const char*)&fileVersion, sizeof(unsigned int));
-		dataSection.write(explictSaltValue.c_str(), sizeof(char) * explictSaltValue.size());
-		dataSection.write(encrypted.c_str(), sizeof(char) * encrypted.size());
-		EncodeBase64(dataSection.str(), encrypted);
+			std::ostringstream dataSection(std::ios::binary);
+			char fileVersion = VERSION();
+			std::string explictSaltValue = loadedLicense.explicitSalt.Value();
+			dataSection.write((const char*)&fileVersion, sizeof(unsigned int));
+			dataSection.write(explictSaltValue.c_str(), sizeof(char) * explictSaltValue.size());
+			dataSection.write(encrypted.c_str(), sizeof(char) * encrypted.size());
+			EncodeBase64(dataSection.str(), encrypted);
 
-		std::ofstream out(licenseFilepath.c_str());
-		if (!out)
-		{
-			LOG(error) << "fail to open = " << licenseFilepath;
-			return false;
+			std::ofstream out(licenseFilepath.c_str());
+			if (!out)
+			{
+				LOG(error) << "fail to open = " << licenseFilepath;
+				return false;
+			}
+			for (Features::const_iterator cit = loadedLicense.features.begin(); cit != loadedLicense.features.end(); ++
+			     cit)
+			{
+				out << Convert(cit->first, cit->second) << "\n";
+			}
+			out << "\n";
+			out << DATA_SECTION_DELIMITER << "\n";
+			out << encrypted << "\n";
+			out << DATA_SECTION_DELIMITER << "\n";
+			out.close();
+			return true;
 		}
-		for (Features::const_iterator cit = loadedLicense.features.begin(); cit != loadedLicense.features.end(); ++cit)
-		{
-			out << Convert(cit->first, cit->second) << "\n";
-		}
-		out << "\n";
-		out << DATA_SECTION_DELIMITER << "\n";
-		out << encrypted << "\n";
-		out << DATA_SECTION_DELIMITER << "\n";
-		out.close();
-		return true;
+		LOG(error) << "license is not loaded";
+		return false;
 	}
 
 
@@ -637,4 +638,4 @@ namespace lickey
 		LOG(info) << "done to convert feature successfully (name = " << featureName << ")\n";
 		return true;
 	}
-}
+	}
