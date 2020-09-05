@@ -424,7 +424,7 @@ namespace lickey
 
 
 					std::string decrypted;
-					if (!::DecryptData(
+					if (DecryptData(
 						key,
 						vendorName,
 						appName,
@@ -435,21 +435,20 @@ namespace lickey
 						license.implicitSalt,
 						license.lastUsedDate))
 					{
-						LOG(error) << "fail to decrypt";
-						return false;
-					}
+						// validate each feature
+						for (Features::iterator cit = license.features.begin(); cit != license.features.end(); ++cit)
+						{
+							Hash checkSum;
+							MakeFeatureSign(cit->first, cit->second, license.implicitSalt, checkSum);
+							cit->second.checkSum = checkSum;
+						}
 
-					// validate each feature
-					for (Features::iterator cit = license.features.begin(); cit != license.features.end(); ++cit)
-					{
-						Hash checkSum;
-						MakeFeatureSign(cit->first, cit->second, license.implicitSalt, checkSum);
-						cit->second.checkSum = checkSum;
+						loadedLicense = license;
+						isLicenseLorded = true;
+						return true;
 					}
-
-					loadedLicense = license;
-					isLicenseLorded = true;
-					return true;
+					LOG(error) << "fail to decrypt";
+					return false;
 				}
 				return false;
 			}
