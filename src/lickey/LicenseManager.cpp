@@ -32,6 +32,10 @@ namespace
         };
     };
 
+    auto IntoChar = [](unsigned char c)
+    {
+        return static_cast<char>(c);
+    };
 
     int CalcBase64EncodedSize(int origDataSize)
     {
@@ -334,11 +338,6 @@ namespace lickey
 
     bool LicenseManager::Load(const std::string& filepath, const HardwareKey& key, License& license)
     {
-        auto IntoChar = [](unsigned char c)
-        {
-            return static_cast<char>(c);
-        };
-
         licenseFilepath = filepath;
         isLicenseLorded = false;
         license.key = key;
