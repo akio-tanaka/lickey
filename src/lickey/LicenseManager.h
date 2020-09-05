@@ -13,7 +13,7 @@ namespace lickey
         std::string appName;
 
         std::string licenseFilepath;
-        bool isLicenseLorded;
+        bool isLicenseLoaded;
         License loadedLicense;
 
     public:
@@ -21,7 +21,8 @@ namespace lickey
         virtual ~LicenseManager();
 
         bool Load(const std::string& filepath, const HardwareKey& key, License& license);
-        bool Update(/*const std::string& filepath, const HardwareKey& key, License& license*/);
+        bool UpdateLicense();
+        bool Update();
         bool Save(const std::string& filepath, const HardwareKey& key, License& license);
         void Add(
             const std::string& featureName,
@@ -45,7 +46,7 @@ namespace lickey
         };
         bool IsLicenseLoaded() const
         {
-            return isLicenseLorded;
+            return isLicenseLoaded;
         };
 
     private:
