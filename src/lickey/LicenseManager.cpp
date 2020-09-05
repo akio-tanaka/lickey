@@ -424,7 +424,6 @@ namespace lickey
 					boost::scoped_array<unsigned char> scopedDecoded2(decoded2);
 
 
-					std::string decrypted;
 					if (DecryptData(
 						key,
 						vendorName,
