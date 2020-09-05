@@ -198,14 +198,14 @@ namespace
 
 
     bool DecryptData(
-        const HardwareKey& key,
-        const std::string& vendorName,
-        const std::string& appName,
-        const Hash& firstFeatureSign,
-        const Salt& explicitSalt,
-        const unsigned char* data,
-        const size_t datalen,
+		const HardwareKey& key,
+        std::string& vendorName,
+        std::string& appName,
+        Hash& firstFeatureSign,
+        Salt& explicitSalt,
         Salt& implicitSalt,
+        unsigned char* data,
+        size_t datalen,
         Date& lastUsedDate)
     {
         unsigned char encryptionKey[16];
@@ -274,12 +274,12 @@ namespace
 
     bool EncryptData(
         const HardwareKey& key,
-        const std::string& vendorName,
-        const std::string& appName,
-        const Hash& firstFeatureSign,
-        const Salt& explicitSalt,
-        const Salt& implicitSalt,
-        const Date& lastUsedDate,
+        std::string& vendorName,
+        std::string& appName,
+        Hash& firstFeatureSign,
+        Salt& explicitSalt,
+        Salt& implicitSalt,
+        Date& lastUsedDate,
         std::string& encrepted)
     {
         unsigned char encryptionKey[16];
@@ -439,9 +439,9 @@ namespace lickey
                         appName,
                         license.features.begin()->second.sign,
                         license.explicitSalt,
-                        decoded2,
-                        (const size_t)decodedSize2,
                         license.implicitSalt,
+                        decoded2, 
+                        (const size_t)decodedSize2,
                         license.lastUsedDate))
             {
                 LOG(error) << "fail to decrypt";
