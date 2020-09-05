@@ -31,7 +31,7 @@ namespace lickey
             unsigned int numLics,
             License& license);
 
-        const std::string& VenderName() const
+        const std::string& VendorName() const
         {
             return vendorName;
         };
