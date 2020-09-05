@@ -464,10 +464,7 @@ namespace lickey
     }
 
 
-    bool LicenseManager::Update(/*
-        const std::string& filepath,
-        const HardwareKey& key,
-        License& license*/)
+    bool LicenseManager::Update()
     {
         if(!isLicenseLorded)
         {
