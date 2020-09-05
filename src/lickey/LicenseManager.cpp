@@ -338,6 +338,35 @@ namespace lickey
 	}
 
 
+	bool LicenseManager::isLicenseDecrypt(const HardwareKey& key, License& license, int decodedSize2, unsigned char* decoded2)
+	{
+		if (DecryptData(
+			key,
+			vendorName,
+			appName,
+			license.features.begin()->second.sign,
+			license.explicitSalt,
+			decoded2,
+			(const size_t)decodedSize2,
+			license.implicitSalt,
+			license.lastUsedDate))
+		{
+			// validate each feature
+			for (Features::iterator cit = license.features.begin(); cit != license.features.end(); ++cit)
+			{
+				Hash checkSum;
+				MakeFeatureSign(cit->first, cit->second, license.implicitSalt, checkSum);
+				cit->second.checkSum = checkSum;
+			}
+
+			loadedLicense = license;
+			isLicenseLorded = true;
+			return true;
+		}
+		LOG(error) << "fail to decrypt";
+		return false;
+	}
+
 	bool LicenseManager::isLicenseDataSection(const HardwareKey& key, License& license, std::vector<std::string> lines)
 	{
 		std::string data;
@@ -399,31 +428,7 @@ namespace lickey
 				boost::scoped_array<unsigned char> scopedDecoded2(decoded2);
 
 
-				if (DecryptData(
-					key,
-					vendorName,
-					appName,
-					license.features.begin()->second.sign,
-					license.explicitSalt,
-					decoded2,
-					(const size_t)decodedSize2,
-					license.implicitSalt,
-					license.lastUsedDate))
-				{
-					// validate each feature
-					for (Features::iterator cit = license.features.begin(); cit != license.features.end(); ++cit)
-					{
-						Hash checkSum;
-						MakeFeatureSign(cit->first, cit->second, license.implicitSalt, checkSum);
-						cit->second.checkSum = checkSum;
-					}
-
-					loadedLicense = license;
-					isLicenseLorded = true;
-					return true;
-				}
-				LOG(error) << "fail to decrypt";
-				return false;
+				return isLicenseDecrypt(key, license, decodedSize2, decoded2);
 			}
 			return false;
 		}
