@@ -338,13 +338,8 @@ namespace lickey
 	}
 
 
-	bool LicenseManager::Load(const std::string& filepath, const HardwareKey& key, License& license)
+	bool LicenseManager::isLicenseRead(const std::string& filepath, const HardwareKey& key, License& license)
 	{
-		licenseFilepath = filepath;
-		isLicenseLorded = false;
-		license.key = key;
-
-		LOG(info) << "start to load license file = " << filepath;
 		std::vector<std::string> lines;
 		if (ReadLines(filepath, lines))
 		{
@@ -457,6 +452,16 @@ namespace lickey
 		}
 		LOG(error) << "fail to open";
 		return false;
+	}
+
+	bool LicenseManager::Load(const std::string& filepath, const HardwareKey& key, License& license)
+	{
+		licenseFilepath = filepath;
+		isLicenseLorded = false;
+		license.key = key;
+
+		LOG(info) << "start to load license file = " << filepath;
+		return isLicenseRead(filepath, key, license);
 	}
 
 
