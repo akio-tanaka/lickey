@@ -353,11 +353,10 @@ namespace lickey
 			{
 				std::string featureName;
 				FeatureInfo featureInfo;
-				if (!ConvertFeature(lines[i], featureName, featureInfo))
+				if (ConvertFeature(lines[i], featureName, featureInfo))
 				{
-					continue;
+					license.features[featureName] = featureInfo;
 				}
-				license.features[featureName] = featureInfo;
 			}
 			if (license.features.empty())
 			{
