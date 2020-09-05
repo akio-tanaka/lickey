@@ -13,7 +13,7 @@ namespace lickey
         std::string appName;
 
         std::string licenseFilepath;
-        bool isLicenseLorded;
+        bool isLicenseLoaded;
         License loadedLicense;
 
     public:
@@ -45,7 +45,7 @@ namespace lickey
         };
         bool IsLicenseLoaded() const
         {
-            return isLicenseLorded;
+            return isLicenseLoaded;
         };
 
     private:

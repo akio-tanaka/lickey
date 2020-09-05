@@ -321,7 +321,7 @@ namespace lickey
 		const std::string& an)
 		: vendorName(vn)
 		  , appName(an)
-		  , isLicenseLorded(false)
+		  , isLicenseLoaded(false)
 	{
 		InitializeOpenSSL();
 	}
@@ -341,7 +341,7 @@ namespace lickey
 		};
 
 		licenseFilepath = filepath;
-		isLicenseLorded = false;
+		isLicenseLoaded = false;
 		license.key = key;
 
 		LOG(info) << "start to load license file = " << filepath;
@@ -458,7 +458,7 @@ namespace lickey
 			}
 
 			loadedLicense = license;
-			isLicenseLorded = true;
+			isLicenseLoaded = true;
 			return true;
 		}
 		return false;
@@ -467,7 +467,7 @@ namespace lickey
 
 	bool LicenseManager::Update()
 	{
-		if (!isLicenseLorded)
+		if (!isLicenseLoaded)
 		{
 			LOG(error) << "license is not loaded";
 			return false;
@@ -535,7 +535,7 @@ namespace lickey
 		licenseFilepath = filepath;
 		loadedLicense = license;
 		loadedLicense.key = key;
-		isLicenseLorded = true;
+		isLicenseLoaded = true;
 		return Update();
 	}
 
