@@ -21,6 +21,7 @@ namespace lickey
         virtual ~LicenseManager();
 
         bool Load(const std::string& filepath, const HardwareKey& key, License& license);
+        bool UpdateLicense();
         bool Update();
         bool Save(const std::string& filepath, const HardwareKey& key, License& license);
         void Add(
