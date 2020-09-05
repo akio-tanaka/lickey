@@ -280,7 +280,7 @@ namespace
         const Salt& explicitSalt,
         const Salt& implicitSalt,
         const Date& lastUsedDate,
-        std::string& encrepted)
+        std::string& encrypted)
     {
         unsigned char encryptionKey[16];
         if(!MakeEncryptionKey(key, vendorName, appName, firstFeatureSign, explicitSalt, encryptionKey))
@@ -303,10 +303,10 @@ namespace
         dst.write(implicitSalt.Value().c_str(), sizeof(char) * implicitSalt.Value().size());
         dst.write(strDate.c_str(), sizeof(char) * strDate.size());
 
-        unsigned char ecryptedImpl[BUF_SIZE] = { '\0' };
-        size_t ecryptedImplSize = BUF_SIZE;
-        Encrypt(dst.str().c_str(), dst.str().size(), encryptionKey, encryptionIv, ecryptedImpl, ecryptedImplSize);
-        EncodeBase64(ecryptedImpl, static_cast<int>(ecryptedImplSize), encrepted);
+        unsigned char encryptedImpl[BUF_SIZE] = {'\0' };
+        size_t encryptedImplSize = BUF_SIZE;
+        Encrypt(dst.str().c_str(), dst.str().size(), encryptionKey, encryptionIv, encryptedImpl, encryptedImplSize);
+        EncodeBase64(encryptedImpl, static_cast<int>(encryptedImplSize), encrypted);
         return true;
     }
 }
