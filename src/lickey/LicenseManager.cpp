@@ -38,7 +38,7 @@ namespace
         const int numBlocks6 = (origDataSize * 8 + 5) / 6;  // the number of blocks (6 bits per a block, rounding up)
         const int numBlocks4 = (numBlocks6 + 3) / 4;    // the number of blocks (4 characters per a block, rounding up)
         const int numNetChars = numBlocks4 * 4; // the number of characters without carriage return
-        return numNetChars + ((numNetChars / 76) * 2);  // the number of encoded characters (76 characters per line, curretly only for carriage return)
+        return numNetChars + ((numNetChars / 76) * 2);  // the number of encoded characters (76 characters per line, currently only for carriage return)
     }
 
 
@@ -108,7 +108,7 @@ namespace
         const std::vector<std::string>& lines,
         std::string& data)
     {
-        const auto isDataDelmiter = [](const std::string & line)
+        const auto isDataDelimiter = [](const std::string & line)
         {
             const std::string::size_type pos = line.find_first_of(DATA_SECTION_DELIMITER);
             if(std::string::npos == pos)
@@ -127,7 +127,7 @@ namespace
         std::stringstream dataStream;
         for(size_t i = 0; i < lines.size(); ++i)
         {
-            if(isDataDelmiter(lines[i]))
+            if(isDataDelimiter(lines[i]))
             {
                 isInData = !isInData;
                 if(!isInData)
@@ -320,7 +320,7 @@ namespace lickey
         const std::string& an)
         : vendorName(vn)
         , appName(an)
-        , isLicenseLorded(false)
+        , isLicenseLoaded(false)
     {
         InitializeOpenSSL();
     }
@@ -340,7 +340,7 @@ namespace lickey
         };
 
         licenseFilepath = filepath;
-        isLicenseLorded = false;
+        isLicenseLoaded = false;
         license.key = key;
 
         LOG(info) << "start to load license file = " << filepath;
@@ -457,7 +457,7 @@ namespace lickey
             }
 
             loadedLicense = license;
-            isLicenseLorded = true;
+            isLicenseLoaded = true;
             return true;
         }
         return false;
@@ -469,7 +469,7 @@ namespace lickey
         const HardwareKey& key,
         License& license*/)
     {
-        if(!isLicenseLorded)
+        if(!isLicenseLoaded)
         {
             LOG(error) << "license is not loaded";
             return false;
@@ -537,7 +537,7 @@ namespace lickey
         licenseFilepath = filepath;
         loadedLicense = license;
         loadedLicense.key = key;
-        isLicenseLorded = true;
+        isLicenseLoaded = true;
         return Update();
     }
 
