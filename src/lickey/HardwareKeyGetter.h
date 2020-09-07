@@ -3,12 +3,12 @@
 
 namespace lickey
 {
-    class HardwareKeyGetter
-    {
-    public:
-        HardwareKeyGetter();
-        virtual ~HardwareKeyGetter();
+	class HardwareKeyGetter
+	{
+	public:
+		HardwareKeyGetter();
+		virtual ~HardwareKeyGetter();
 
-        HardwareKeys operator()() const;
-    };
+		HardwareKeys operator()() const;
+	};
 }
