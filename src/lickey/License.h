@@ -5,28 +5,27 @@
 
 namespace lickey
 {
-    class License
-    {
-        friend class LicenseManager;
+	class License
+	{
+		friend class LicenseManager;
 
-        char fileVersion;
-        Features features;
-        HardwareKey key;
-        Salt explicitSalt;
-        Salt implicitSalt;
-        Date lastUsedDate;
+		char fileVersion;
+		Features features;
+		HardwareKey key;
+		Salt explicitSalt;
+		Salt implicitSalt;
+		Date lastUsedDate;
 
-    public:
-        License();
-        License(const License& obj);
-        virtual ~License();
+	public:
+		License();
+		License(const License& obj);
+		virtual ~License();
 
-        License& operator=(const License& obj);
+		License& operator=(const License& obj);
 
-        Features& FeatureMap()
-        {
-            return features;
-        };
-    };
-
+		Features& FeatureMap()
+		{
+			return features;
+		};
+	};
 };
