@@ -392,7 +392,6 @@ namespace lickey {
           unsigned char *decoded2 = NULL;
           DecodeBase64(base64Encrypted, decoded2, decodedSize2);
           boost::scoped_array<unsigned char> scopedDecoded2(decoded2);
-          std::string decrypted;
           DL decrypt_license;
           decrypt_license.key = key;
           decrypt_license.vendorName = vendorName;
@@ -400,7 +399,7 @@ namespace lickey {
           decrypt_license.firstFeatureSign = license.features.begin()->second.sign;
           decrypt_license.explicitSalt = license.explicitSalt;
 
-          if (!::DecryptData(decrypt_license, license.implicitSalt, license.lastUsedDate,
+          if (DecryptData(decrypt_license, license.implicitSalt, license.lastUsedDate,
               decoded2,
               (const size_t)decodedSize2
             )) {
@@ -467,7 +466,7 @@ namespace lickey {
     encrypt_license.implicitSalt = loadedLicense.implicitSalt;
     encrypt_license.lastUsedDate = today;
 
-    if (!EncryptData(encrypt_license, encrypted)) {
+    if (EncryptData(encrypt_license, encrypted)) {
       std::ostringstream dataSection(std::ios::binary);
       char fileVersion = VERSION();
       std::string explictSaltValue = loadedLicense.explicitSalt.Value();
