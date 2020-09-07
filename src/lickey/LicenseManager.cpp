@@ -22,6 +22,23 @@ namespace {
   const unsigned int BUF_SIZE = 65536;
   const std::string DATA_SECTION_DELIMITER = "***";
 
+  typedef struct EncryptLicense {
+    HardwareKey key;
+    std::string vendorName;
+    std::string appName;
+    Hash firstFeatureSign;
+    Salt explicitSalt;
+    Salt implicitSalt;
+    Date lastUsedDate;
+  } EL;
+
+  typedef struct DecryptLicense {
+    HardwareKey key;
+    std::string vendorName;
+    std::string appName;
+    Hash firstFeatureSign;
+    Salt explicitSalt;
+  } DL;
 
   struct UnsignedChar2Char {
     char operator()(unsigned char c) const {
@@ -185,25 +202,22 @@ namespace {
 
 
   bool DecryptData(
-    const HardwareKey &key,
-    std::string &vendorName,
-    std::string &appName,
-    Hash &firstFeatureSign,
-    Salt &explicitSalt,
+    const DL dl,
     Salt &implicitSalt,
+    Date &lastUsedDate,
     unsigned char *data,
-    size_t datalen,
-    Date &lastUsedDate) {
+    size_t datalen
+  ) {
     unsigned char encryptionKey[16];
 
-    if (!MakeEncryptionKey(key, vendorName, appName, firstFeatureSign, explicitSalt, encryptionKey)) {
+    if (!MakeEncryptionKey(dl.key, dl.vendorName, dl.appName, dl.firstFeatureSign, dl.explicitSalt, encryptionKey)) {
       LOG(error) << "fail to get key";
       return false;
     }
 
     unsigned char encryptionIv[16];
 
-    if (!MakeEncryptionIv(key, explicitSalt, encryptionKey, encryptionIv)) {
+    if (!MakeEncryptionIv(dl.key, dl.explicitSalt, encryptionKey, encryptionIv)) {
       LOG(error) << "fail to get iv";
       return false;
     }
@@ -257,38 +271,30 @@ namespace {
   }
 
 
-  bool EncryptData(
-    const HardwareKey &key,
-    std::string &vendorName,
-    std::string &appName,
-    Hash &firstFeatureSign,
-    Salt &explicitSalt,
-    Salt &implicitSalt,
-    Date &lastUsedDate,
-    std::string &encrypted) {
+  bool EncryptData(EL &el, std::string &encrypted) {
     unsigned char encryptionKey[16];
 
-    if (!MakeEncryptionKey(key, vendorName, appName, firstFeatureSign, explicitSalt, encryptionKey)) {
+    if (!MakeEncryptionKey(el.key, el.vendorName, el.appName, el.firstFeatureSign, el.explicitSalt, encryptionKey)) {
       LOG(error) << "fail to get key";
       return false;
     }
 
     unsigned char encryptionIv[16];
 
-    if (!MakeEncryptionIv(key, explicitSalt, encryptionKey, encryptionIv)) {
+    if (!MakeEncryptionIv(el.key, el.explicitSalt, encryptionKey, encryptionIv)) {
       LOG(error) << "fail to get iv";
       return false;
     }
 
-    const std::string strDate = ToString(lastUsedDate);
+    const std::string strDate = ToString(el.lastUsedDate);
     assert(8 == strDate.size());
     std::ostringstream dst(std::ios::binary);
-    dst.write(implicitSalt.Value().c_str(), sizeof(char) * implicitSalt.Value().size());
+    dst.write(el.implicitSalt.Value().c_str(), sizeof(char) * el.implicitSalt.Value().size());
     dst.write(strDate.c_str(), sizeof(char) * strDate.size());
-    unsigned char encryptedImpl[BUF_SIZE] = {'\0'};
+    unsigned char ecryptedImpl[BUF_SIZE] = { '\0' };
     size_t ecryptedImplSize = BUF_SIZE;
-    Encrypt(dst.str().c_str(), dst.str().size(), encryptionKey, encryptionIv, encryptedImpl, ecryptedImplSize);
-    EncodeBase64(encryptedImpl, static_cast<int>(ecryptedImplSize), encrypted);
+    Encrypt(dst.str().c_str(), dst.str().size(), encryptionKey, encryptionIv, ecryptedImpl, ecryptedImplSize);
+    EncodeBase64(ecryptedImpl, static_cast<int>(ecryptedImplSize), encrypted);
     return true;
   }
 }
@@ -387,17 +393,17 @@ namespace lickey {
           DecodeBase64(base64Encrypted, decoded2, decodedSize2);
           boost::scoped_array<unsigned char> scopedDecoded2(decoded2);
           std::string decrypted;
+          DL decrypt_license;
+          decrypt_license.key = key;
+          decrypt_license.vendorName = vendorName;
+          decrypt_license.appName = appName;
+          decrypt_license.firstFeatureSign = license.features.begin()->second.sign;
+          decrypt_license.explicitSalt = license.explicitSalt;
 
-          if (!::DecryptData(
-              key,
-              vendorName,
-              appName,
-              license.features.begin()->second.sign,
-              license.explicitSalt,
-              license.implicitSalt,
+          if (!::DecryptData(decrypt_license, license.implicitSalt, license.lastUsedDate,
               decoded2,
-              (const size_t)decodedSize2,
-              license.lastUsedDate)) {
+              (const size_t)decodedSize2
+            )) {
             // validate each feature
             for (Features::iterator cit = license.features.begin(); cit != license.features.end(); ++cit) {
               Hash checkSum;
@@ -452,15 +458,16 @@ namespace lickey {
     std::string encrypted;
     Date today;
     SetToday(today);
+    EL encrypt_license;
+    encrypt_license.key = loadedLicense.key;
+    encrypt_license.vendorName = vendorName;
+    encrypt_license.appName = appName;
+    encrypt_license.firstFeatureSign = loadedLicense.features.begin()->second.sign;
+    encrypt_license.explicitSalt = loadedLicense.explicitSalt;
+    encrypt_license.implicitSalt = loadedLicense.implicitSalt;
+    encrypt_license.lastUsedDate = today;
 
-    if (EncryptData(
-        loadedLicense.key,
-        vendorName,
-        appName,
-        loadedLicense.features.begin()->second.sign,
-        loadedLicense.explicitSalt,
-        loadedLicense.implicitSalt,
-        today, encrypted)) {
+    if (!EncryptData(encrypt_license, encrypted)) {
       std::ostringstream dataSection(std::ios::binary);
       char fileVersion = VERSION();
       std::string explictSaltValue = loadedLicense.explicitSalt.Value();
