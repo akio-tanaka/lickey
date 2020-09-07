@@ -38,7 +38,7 @@ namespace {
     const int numBlocks4 = (numBlocks6 + 3) / 4; // the number of blocks (4 characters per a block, rounding up)
     const int numNetChars = numBlocks4 * 4; // the number of characters without carriage return
     return numNetChars + ((numNetChars / 76) * 2);
-    // the number of encoded characters (76 characters per line, curretly only for carriage return)
+    // the number of encoded characters (76 characters per line, currently only for carriage return)
   }
 
 
@@ -100,7 +100,7 @@ namespace {
   bool FindDataSection(
     const std::vector<std::string> &lines,
     std::string &data) {
-    const auto isDataDelmiter = [](const std::string & line) {
+    const auto isDataDelimiter = [](const std::string & line) {
       const std::string::size_type pos = line.find_first_of(DATA_SECTION_DELIMITER);
 
       if (std::string::npos == pos) {
@@ -118,7 +118,7 @@ namespace {
     std::stringstream dataStream;
 
     for (size_t i = 0; i < lines.size(); ++i) {
-      if (isDataDelmiter(lines[i])) {
+      if (isDataDelimiter(lines[i])) {
         isInData = !isInData;
 
         if (!isInData) {
@@ -265,7 +265,7 @@ namespace {
     const Salt &explicitSalt,
     const Salt &implicitSalt,
     const Date &lastUsedDate,
-    std::string &encrepted) {
+    std::string &encrypted) {
     unsigned char encryptionKey[16];
 
     if (!MakeEncryptionKey(key, vendorName, appName, firstFeatureSign, explicitSalt, encryptionKey)) {
@@ -285,10 +285,10 @@ namespace {
     std::ostringstream dst(std::ios::binary);
     dst.write(implicitSalt.Value().c_str(), sizeof(char) * implicitSalt.Value().size());
     dst.write(strDate.c_str(), sizeof(char) * strDate.size());
-    unsigned char ecryptedImpl[BUF_SIZE] = {'\0'};
+    unsigned char encryptedImpl[BUF_SIZE] = {'\0'};
     size_t ecryptedImplSize = BUF_SIZE;
-    Encrypt(dst.str().c_str(), dst.str().size(), encryptionKey, encryptionIv, ecryptedImpl, ecryptedImplSize);
-    EncodeBase64(ecryptedImpl, static_cast<int>(ecryptedImplSize), encrepted);
+    Encrypt(dst.str().c_str(), dst.str().size(), encryptionKey, encryptionIv, encryptedImpl, ecryptedImplSize);
+    EncodeBase64(encryptedImpl, static_cast<int>(ecryptedImplSize), encrypted);
     return true;
   }
 }
@@ -300,7 +300,7 @@ namespace lickey {
     const std::string &an)
     : vendorName(vn)
     , appName(an)
-    , isLicenseLorded(false) {
+    , isLicenseLoaded(false) {
     InitializeOpenSSL();
   }
 
@@ -312,7 +312,7 @@ namespace lickey {
 
   bool LicenseManager::Load(const std::string &filepath, const HardwareKey &key, License &license) {
     licenseFilepath = filepath;
-    isLicenseLorded = false;
+    isLicenseLoaded = false;
     license.key = key;
     LOG(info) << "start to load license file = " << filepath;
     std::vector<std::string> lines;
@@ -406,7 +406,7 @@ namespace lickey {
             }
 
             loadedLicense = license;
-            isLicenseLorded = true;
+            isLicenseLoaded = true;
             return true;
           }
 
@@ -430,7 +430,7 @@ namespace lickey {
         const std::string& filepath,
         const HardwareKey& key,
         License& license*/) {
-    if (!isLicenseLorded) {
+    if (!isLicenseLoaded) {
       LOG(error) << "license is not loaded";
       return false;
     }
@@ -496,7 +496,7 @@ namespace lickey {
     licenseFilepath = filepath;
     loadedLicense = license;
     loadedLicense.key = key;
-    isLicenseLorded = true;
+    isLicenseLoaded = true;
     return Update();
   }
 
