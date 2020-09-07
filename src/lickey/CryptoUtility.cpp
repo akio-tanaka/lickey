@@ -4,7 +4,6 @@
 #include <openssl/md5.h>
 #include <openssl/sha.h>
 #include <openssl/rand.h>
-#include <openssl/bio.h>
 #include <openssl/buffer.h>
 #include <algorithm>
 // to remove warning C4996 for fopen() in openssl/applink.c

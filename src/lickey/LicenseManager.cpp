@@ -1,20 +1,14 @@
 #include "stdafx.h"
 #include "LicenseManager.h"
-#include "License.h"
-#include "FeatureInfo.h"
 #include "FileUtility.h"
 #include "HardwareKeyGetter.h"
 #include "CryptoUtility.h"
 #include "Version.h"
 #include <boost/algorithm/string.hpp>
 #include <boost/range/algorithm/for_each.hpp>
-#include <boost/lexical_cast.hpp>
 #include <boost/scoped_array.hpp>
 #include <algorithm>
 #include <fstream>
-#include <locale>
-// for C4996: http://eng-notebook.com/blog-entry-229/
-
 
 namespace
 {
